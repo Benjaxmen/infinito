@@ -34,6 +34,11 @@ class UserService {
     const user = await this.userModel.findByIdAndDelete(userId);
     return user;
   }
+
+  validatePassword(password: string): boolean {
+    // Add implementation here to validate the password
+    // Return true if the password is valid, false otherwise
+  }
 }
 
 export default UserService;
