@@ -6,7 +6,7 @@
 
 Web tokens are a type of token-based authentication mechanism used in web applications. They are used to securely transmit information between parties and are commonly used for user authentication.
 
-To generate a web token, you can use the `generateToken` function provided by the auth module. This function takes in the user's credentials and returns a unique token that can be used for authentication.
+To generate a web token, you can use the `generateToken` function provided by the auth module. This function takes in the user's credentials (username and password) and returns a unique token that can be used for authentication.
 
 Here is an example of how to generate a web token:
 
