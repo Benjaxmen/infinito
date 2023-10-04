@@ -1,6 +1,7 @@
 import * as mongoose from 'mongoose';
 import UserSchema from '../schemas/user.schema';
 import { BadRequestException } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
 import { isEmail } from 'validator';
 
 class UserService {
@@ -13,10 +14,13 @@ class UserService {
     }
     if(!isEmail(userData.email)){
       throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Ingresa un correo electrónico válido' })
-
     }
-
-    const user = new this.userModel(userData);
+  
+    const user = new this.userModel({
+      ...userData,
+      dateOfRegistry: Date.now(),
+      rol: 'Usuario',
+    });
     await user.save();
     return user;
   }
