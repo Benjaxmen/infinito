@@ -21,8 +21,13 @@ describe('UserService', () => {
   describe('create', () => {
     it('should create a new user if email is valid and not repeated', async () => {
       const userData = {
-        email: 'test@example.com',
-        password: 'password123',
+        email: 'test2@example.com',
+        name: "Benjamín Suárez Chavarría",
+        password: "123123123",
+        dateofbirth: "1997-07-22",
+        profession: "ingeniero",
+        rut: "154326750",
+        cellphone: "3445564465"
       };
 
       jest.spyOn(userModel, 'findOne').mockResolvedValue(null);
@@ -37,8 +42,13 @@ describe('UserService', () => {
 
     it('should throw BadRequestException if email is already associated with an account', async () => {
       const userData = {
-        email: 'test@example.com',
-        password: 'password123',
+        email: 'test2@example.com',
+        name: "Benjamín Suárez Chavarría",
+        password: "123123123",
+        dateofbirth: "1997-07-22",
+        profession: "ingeniero",
+        rut: "154326750",
+        cellphone: "3445564465"
       };
 
       jest.spyOn(userModel, 'findOne').mockResolvedValue(userData);
@@ -49,7 +59,12 @@ describe('UserService', () => {
     it('should throw BadRequestException if email is not valid', async () => {
       const userData = {
         email: 'invalidemail',
-        password: 'password123',
+        name: "Benjamín Suárez Chavarría",
+        password: "123123123",
+        dateofbirth: "1997-07-22",
+        profession: "ingeniero",
+        rut: "154326750",
+        cellphone: "3445564465"
       };
 
       await expect(service.create(userData)).rejects.toThrow(BadRequestException);
