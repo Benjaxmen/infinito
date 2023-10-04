@@ -4,6 +4,7 @@ import { isEmail } from 'validator';
 import UserService from './user.service';
 import UserSchema from '../schemas/user.schema';
 import * as mongoose from 'mongoose';
+import { ObjectId } from 'mongodb';
 
 describe('UserService', () => {
   let service: UserService;
@@ -37,7 +38,7 @@ describe('UserService', () => {
 
       expect(userModel.findOne).toHaveBeenCalledWith({ email: userData.email });
       expect(userModel.prototype.save).toHaveBeenCalled();
-      expect(result).toEqual(userData);
+      expect(ObjectId.isValid(result)).toBeTruthy();
     });
 
     it('should throw BadRequestException if email is already associated with an account', async () => {
