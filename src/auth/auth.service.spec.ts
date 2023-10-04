@@ -15,4 +15,6 @@ describe('AuthService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
+
+  // Add test cases for signin, login, and generate token methods
 });
