@@ -15,4 +15,6 @@ describe('AuthController', () => {
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
+
+  // Add test cases for signin, login, and generate token methods
 });
