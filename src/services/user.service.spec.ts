@@ -29,15 +29,15 @@ describe('UserService', () => {
         rut: "154326750",
         cellphone: "3445564465"
       };
-
+    
       jest.spyOn(userModel, 'findOne').mockResolvedValue(null);
       jest.spyOn(userModel.prototype, 'save').mockResolvedValue(userData);
-
+    
       const result = await service.create(userData);
-
+    
       expect(userModel.findOne).toHaveBeenCalledWith({ email: userData.email });
       expect(userModel.prototype.save).toHaveBeenCalled();
-      expect(result).toEqual(userData);
+      expect(result).toEqual(user.id);
     });
 
     it('should throw BadRequestException if email is already associated with an account', async () => {
