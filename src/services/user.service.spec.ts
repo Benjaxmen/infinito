@@ -78,6 +78,7 @@ describe('UserService', () => {
         dateofbirth: "1997-07-22",
         profession: "ingeniero",
         rut: "154326750",
+        // missing field: cellphone
       };
     
       await expect(service.create(userData)).rejects.toThrow(BadRequestException);
