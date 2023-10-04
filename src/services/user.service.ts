@@ -18,7 +18,7 @@ class UserService {
 
     const user = new this.userModel(userData);
     await user.save();
-    return user;
+    return user.id;
   }
 
   async findAll() {
