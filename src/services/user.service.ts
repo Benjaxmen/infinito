@@ -8,25 +8,26 @@ class UserService {
   private userModel = mongoose.model('User', UserSchema);
 
   async create(userData) {
-    const existingUser = await this.userModel.findOne({ email: userData.email });
-    if (existingUser) {
-      throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Ese correo electrónico ya está asociado a una cuenta' })
+      const existingUser = await this.userModel.findOne({ email: userData.email });
+      if (existingUser) {
+        throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Ese correo electrónico ya está asociado a una cuenta' })
+      }
+      if(!isEmail(userData.email)){
+        throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Ingresa un correo electrónico válido' })
+      }
+    
+      if (Object.values(userData).some(value => !value)) {
+        throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Todos los campos son requeridos' });
+      }
+    
+      const user = new this.userModel({
+        ...userData,
+        dateOfRegistry: Date.now(),
+        rol: 'Usuario',
+      });
+      await user.save();
+      return user;
     }
-    if(!isEmail(userData.email)){
-      throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Ingresa un correo electrónico válido' })
-    }
-  
-    const user = new this.userModel({
-      ...userData,
-      dateOfRegistry: Date.now(),
-      rol: 'Usuario',
-    });
-    await user.save();
-    return user;
-  }
-
-  async findAll() {
-    const users = await this.userModel.find();
     return users;
   }
 
