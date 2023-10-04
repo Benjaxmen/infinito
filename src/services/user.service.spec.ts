@@ -37,7 +37,8 @@ describe('UserService', () => {
     
       expect(userModel.findOne).toHaveBeenCalledWith({ email: userData.email });
       expect(userModel.prototype.save).toHaveBeenCalled();
-      expect(result).toEqual(user.id);
+      expect(result).toEqual(user.id); // Updated assertion
+    
     });
 
     it('should throw BadRequestException if email is already associated with an account', async () => {
