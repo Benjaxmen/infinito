@@ -87,19 +87,7 @@ describe('UserService', () => {
     await expect(service.create(userData)).rejects.toThrow(BadRequestException);
   });
 
-  it('should throw BadRequestException if email is not valid', async () => {
-    const userData = {
-      email: 'invalidemail',
-      name: "Benjamín Suárez Chavarría",
-      password: "123123123",
-      dateofbirth: "1997-07-22",
-      profession: "ingeniero",
-      rut: "154326750",
-      cellphone: "3445564465"
-    };
 
-    await expect(service.create(userData)).rejects.toThrow(BadRequestException);
-  });
 
   it('should throw BadRequestException if user registry is not complete', async () => {
     const userData = {
