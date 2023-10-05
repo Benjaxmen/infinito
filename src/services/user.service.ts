@@ -1,6 +1,7 @@
 import * as mongoose from 'mongoose';
 import UserSchema from '../schemas/user.schema';
 import { BadRequestException } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
 import { isEmail } from 'validator';
 
 class UserService {
@@ -11,14 +12,16 @@ class UserService {
     if (existingUser) {
       throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Ese correo electrónico ya está asociado a una cuenta' })
     }
-    if(!isEmail(userData.email)){
-      throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Ingresa un correo electrónico válido' })
-
+    if(!userData.email || !userData.name || !userData.password || !userData.dateofbirth || !userData.profession || !userData.rut || !userData.cellphone){
+      throw new BadRequestException('Missing required fields');
     }
 
     const user = new this.userModel(userData);
     await user.save();
     return user.id;
+  async findAll() {
+    const users = await this.userModel.find();
+    return users;
   }
 
   async findAll() {
@@ -37,7 +40,10 @@ class UserService {
   }
 
   async update(userId, newUserData) {
-    const user = await this.userModel.findByIdAndUpdate(userId, newUserData, { new: true });
+    async update(userId, newUserData) {
+      const user = await this.userModel.findByIdAndUpdate(userId, newUserData, { new: true });
+      return user;
+    }
     return user;
   }
 
@@ -45,6 +51,6 @@ class UserService {
     const user = await this.userModel.findByIdAndDelete(userId);
     return user;
   }
-}
+export default UserService;
 
 export default UserService;
