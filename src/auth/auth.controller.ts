@@ -12,7 +12,7 @@ export class AuthController {
     // Return the generated token as a response
     return { token };
   }
-
+  
   @Post('login')
   async login(@Req() request: any) {
     
