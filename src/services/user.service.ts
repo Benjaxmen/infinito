@@ -44,10 +44,11 @@ class UserService {
     return users;
   }
 
-  async findOne(userId) {
-    const user = await this.userModel.findOne({_id: userId});
+  async findOne(filter: Record<string, any>) {
+    const user = await this.userModel.findOne(filter);
     return user;
   }
+  
 
   async read(userId) {
     const user = await this.userModel.find({_id: userId});
