@@ -16,8 +16,8 @@ export class AuthController {
   @Post('login')
   async login(@Req() request: any) {
     
-    const { access_token } = await this.authService.login(request);
+    const token = await this.authService.login(request);
     // Return the access_token as a response with the key 'token'
-    return { token: access_token };
+    return token;
   }
 }
