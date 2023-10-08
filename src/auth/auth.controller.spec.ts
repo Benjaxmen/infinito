@@ -31,12 +31,7 @@ describe('AuthController', () => {
     userModel = mongoose.model('User', UserSchema);
   });
   describe('login', () => {
-    it('should return a JSON web token when the email and password combination is correct', async () => {
-      const email = 'test@example.com';
-      const password = 'password';
-      const token = 'mocked_token';
-    
-      jest.spyOn(authService, 'login').mockResolvedValue({ access_token: token }); // Devolver un objeto con la estructura correcta
+    jest.spyOn(authService, 'login').mockResolvedValue({ access_token: token });
     
       const result = await controller.login({ email, password });
     
@@ -44,19 +39,14 @@ describe('AuthController', () => {
     });
     
 
-    it('should throw a BadRequestException when the email and password combination is incorrect', async () => {
-      const email = 'test@example.com';
-      const password = 'incorrect_password';
-
-      jest.spyOn(authService, 'login').mockResolvedValue(null);
-
-      try {
-        await controller.login({ email, password });
-      } catch (error) {
-        expect(error).toBeInstanceOf(BadRequestException);
-        expect(error.message).toBe('Correo o contraseña incorrectos, intente nuevamente.');
-        expect(error.getStatus()).toBe(HttpStatus.BAD_REQUEST);
-      }
-    });
+    jest.spyOn(authService, 'login').mockResolvedValue(null);
+    
+    try {
+      await controller.login({ email, password });
+    } catch (error) {
+      expect(error).toBeInstanceOf(BadRequestException);
+      expect(error.message).toBe('Incorrect email or password, please try again.');
+      expect(error.getStatus()).toBe(HttpStatus.BAD_REQUEST);
+    }
   });
 });
