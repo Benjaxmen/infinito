@@ -12,8 +12,4 @@ const UserSchema = new mongoose.Schema({
   cellphone: { type: String, required: true },
 });
 
-UserSchema.methods.validatePassword = async function(password: string): Promise<boolean> {
-  return await bcrypt.compare(password, this.password);
-};
-
 export default UserSchema;

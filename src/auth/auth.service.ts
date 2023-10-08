@@ -21,11 +21,11 @@ export class AuthService {
 
   async validateUser(payload: any): Promise<any> {
     const user: any = await this.userService.findOne(payload.email);
-    if (user && (await user.validatePassword(payload.password))) {
+    if (user && (await this.userService.validatePassword(user.id,payload.password))) {
       const { password, ...result } = user;
       return result;
     }
-    return null;
+    return "null";
   }
 
   async generateToken(user: any) {
