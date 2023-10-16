@@ -15,7 +15,7 @@ export class AuthService {
     const user = await this.validateUser(payload);
     if (user) {
       return {
-        access_token: this.JwtService.sign({ sub: user.id, email: user.email }, { secret: JWT_SECRET }),
+        access_token: this.JwtService.sign({name: user.name, email: user.email,rol: user.rol }, { secret: JWT_SECRET }),
       };
     }
     return null;
