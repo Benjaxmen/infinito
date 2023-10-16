@@ -14,10 +14,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    const user = await this.authService.validateUser(payload);
-    if (!user || payload.rol !== 'Admin') {
+    if (payload.rol !== 'Admin') {
       throw new UnauthorizedException();
     }
+    const user = await this.authService.validateUser(payload);
     return user;
   }
 }
