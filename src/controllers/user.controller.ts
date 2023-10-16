@@ -24,16 +24,15 @@ export class UserController {
   @Get(':id')
   @UseGuards(JwtAuthGuard)
   async read(@Param('id') userId) {
-    return this.validateToken(userId);
-  }
-
-  async validateToken(userId) {
-    // Validate JWT and check 'rol' parameter
-    // Return result
-  }
-
-  @Put(':id')
-  async update(@Param('id') userId, @Body() newUserData) {
+    async validateToken(userId) {
+        // Validate JWT and check 'rol' parameter
+        const user = await this.authService.validateUser(userId);
+        if (!user || user.rol !== 'Admin') {
+            throw new UnauthorizedException();
+        }
+        // Return result
+        return user;
+    }
     return this.userService.update(userId, newUserData);
   }
 
