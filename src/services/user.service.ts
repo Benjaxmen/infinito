@@ -4,7 +4,6 @@ import { BadRequestException } from '@nestjs/common';
 import { isEmail } from 'validator';
 import * as bcrypt from 'bcrypt';
 
-
 class UserService {
   private userModel = mongoose.model('User', UserSchema);
 
@@ -26,12 +25,14 @@ class UserService {
     await user.save();
     return user.id;
   }
+
   async hashPassword(password: string): Promise<string> {
     const saltRounds = 10; // Number of salt rounds (higher is more secure but slower)
 
     const hashedPassword = await bcrypt.hash(password, saltRounds);
     return hashedPassword;
   }
+
   async validatePassword(userId,password: string){
     const user=await this.userModel.findOne({_id: userId});
     const result=await bcrypt.compare(password,user.password);
@@ -49,7 +50,6 @@ class UserService {
     return user;
   }
   
-
   async read(userId) {
     const user = await this.userModel.find({_id: userId});
     return user;
