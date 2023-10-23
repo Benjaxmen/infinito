@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import * as bcrypt from 'bcrypt';
+
 const UserSchema = new mongoose.Schema({
   email: { type: String, required: true},
   name: { type: String, required: true },
@@ -10,6 +10,8 @@ const UserSchema = new mongoose.Schema({
   profession: { type: String, required: true },
   rut: { type: String, required: true },
   cellphone: { type: String, required: true },
+  curriculum: {type: mongoose.Schema.Types.ObjectId, ref: 'Curriculum'},
+  //application: {type: mongoose.Schema.Types.ObjectId, ref: 'Application'},
 });
 
 export default UserSchema;
