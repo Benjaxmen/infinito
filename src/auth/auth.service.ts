@@ -13,7 +13,7 @@ export class AuthService {
   async login(request: any) {
     const payload = { email: request.email, password: request.password };
     const user = await this.validateUser(payload);
-    const payload2={email: user._doc.email, name: user._doc.name,rol:user._doc.rol,dob:user._doc.dateofbirth,profession:user._doc.profession,rut:user._doc.rut,cellphone:user._doc.cellphone}
+    const payload2={id: user._doc._id, email: user._doc.email, name: user._doc.name,rol:user._doc.rol,dob:user._doc.dateofbirth,profession:user._doc.profession,rut:user._doc.rut,cellphone:user._doc.cellphone}
     if (user) {
       const token= await this.JwtService.signAsync(payload2, { secret: JWT_SECRET })
       return {
