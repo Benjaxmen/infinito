@@ -4,10 +4,11 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { isEmail } from 'validator';
 import * as bcrypt from 'bcrypt';
 import CurriculumSchema from 'src/schemas/curriculum.schema';
-
+import DescripcionSchema from 'src/schemas/descripcion.schema';
 class UserService {
   private userModel = mongoose.model('User', UserSchema);
   private curriculumModel = mongoose.model('Curriculum', CurriculumSchema);
+  private descriptionModel = mongoose.model('Description',DescripcionSchema)
   
   async create(userData) {
     const existingUser = await this.userModel.findOne({ email: userData.email });
@@ -395,7 +396,37 @@ class UserService {
   await curriculum.save();
   return curriculum.languages;
   }
+  async findAll_desc() {
+    const users = await this.descriptionModel.find();
+    return users;
+  }
+  async create_description(userId: string, description: string ){
+  const user = await this.userModel.findById(userId);
+  if (!user) {
+    throw new NotFoundException('Usuario no encontrado');
+  }
+  const descrip= new this.descriptionModel(description);
+  await descrip.save();
+  await this.userModel.findByIdAndUpdate(userId, { $set: { descripcion: descrip._id } });
+    return { descripId: descrip._id, userId: userId}
+    
 
+  }
+
+
+
+  async update_description(userId: string,  newDesc: any) {
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+    console.log(user)
+    const descripcionId = user.descripcion;
+    const descripcion = await this.curriculumModel.findByIdAndUpdate(descripcionId,newDesc, { new: true });
+    console.log(newDesc)
+    return descripcion;
+  }
 }
+
 
 export default UserService;

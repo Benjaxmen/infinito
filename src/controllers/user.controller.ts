@@ -31,6 +31,14 @@ export class UserController {
   async delete(@Param('id') userId) {
     return this.userService.delete(userId);
   }
+  @Post(':id/descripcion')
+  async crearDescripcion(@Param('id') userId: string, @Body() descripcion: any){
+    return this.userService.create_description(userId,descripcion)
+  }
+  @Put(':id/descripcion')
+  async editarDescripcion(@Param('id') userId: string, @Body() descripcion: any){
+    return this.userService.update_description(userId,descripcion)
+  }
 
   @Post(':id/curriculum')
   async createCurriculum(@Param('id') userId: string, @Body() curriculumData: any) {
@@ -125,6 +133,9 @@ export class UserController {
   async deleteCurriculumLanguage(@Param('id') userId, @Param('index') index: number) {
     return this.userService.delete_language(userId, index);
   }
-  
+  @Get(':id/descripcion')
+  async findAll_desc() {
+    return this.userService.findAll_desc();
+  }
 
 }
