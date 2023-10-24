@@ -104,7 +104,9 @@ describe('UserService', () => {
         studies: [],
       };
 
-      jest.spyOn(service, 'read_curr_studies').mockResolvedValue(curriculumData);
+      jest
+        .spyOn(service, 'read_curr_studies')
+        .mockResolvedValue(curriculumData);
 
       const result = await service.read_curr_studies(userId);
 
@@ -122,7 +124,9 @@ describe('UserService', () => {
         experiences: [],
       };
 
-      jest.spyOn(service, 'read_curr_experiences').mockResolvedValue(curriculumData);
+      jest
+        .spyOn(service, 'read_curr_experiences')
+        .mockResolvedValue(curriculumData);
 
       const result = await service.read_curr_experiences(userId);
 
@@ -140,7 +144,9 @@ describe('UserService', () => {
         courses: [],
       };
 
-      jest.spyOn(service, 'read_curr_courses').mockResolvedValue(curriculumData);
+      jest
+        .spyOn(service, 'read_curr_courses')
+        .mockResolvedValue(curriculumData);
 
       const result = await service.read_curr_courses(userId);
 
@@ -158,7 +164,9 @@ describe('UserService', () => {
         languages: [],
       };
 
-      jest.spyOn(service, 'read_curr_languages').mockResolvedValue(curriculumData);
+      jest
+        .spyOn(service, 'read_curr_languages')
+        .mockResolvedValue(curriculumData);
 
       const result = await service.read_curr_languages(userId);
 
@@ -180,7 +188,10 @@ describe('UserService', () => {
 
       const result = await service.add_new_study(userId, newCurriculumData);
 
-      expect(service.add_new_study).toHaveBeenCalledWith(userId, newCurriculumData);
+      expect(service.add_new_study).toHaveBeenCalledWith(
+        userId,
+        newCurriculumData,
+      );
       expect(result).toEqual(newCurriculumData);
     });
 
@@ -194,11 +205,19 @@ describe('UserService', () => {
         experiences: [],
       };
 
-      jest.spyOn(service, 'add_new_experience').mockResolvedValue(newCurriculumData);
+      jest
+        .spyOn(service, 'add_new_experience')
+        .mockResolvedValue(newCurriculumData);
 
-      const result = await service.add_new_experience(userId, newCurriculumData);
+      const result = await service.add_new_experience(
+        userId,
+        newCurriculumData,
+      );
 
-      expect(service.add_new_experience).toHaveBeenCalledWith(userId, newCurriculumData);
+      expect(service.add_new_experience).toHaveBeenCalledWith(
+        userId,
+        newCurriculumData,
+      );
       expect(result).toEqual(newCurriculumData);
     });
 
@@ -212,11 +231,16 @@ describe('UserService', () => {
         courses: [],
       };
 
-      jest.spyOn(service, 'add_new_course').mockResolvedValue(newCurriculumData);
+      jest
+        .spyOn(service, 'add_new_course')
+        .mockResolvedValue(newCurriculumData);
 
       const result = await service.add_new_course(userId, newCurriculumData);
 
-      expect(service.add_new_course).toHaveBeenCalledWith(userId, newCurriculumData);
+      expect(service.add_new_course).toHaveBeenCalledWith(
+        userId,
+        newCurriculumData,
+      );
       expect(result).toEqual(newCurriculumData);
     });
 
@@ -230,11 +254,16 @@ describe('UserService', () => {
         languages: [],
       };
 
-      jest.spyOn(service, 'add_new_language').mockResolvedValue(newCurriculumData);
+      jest
+        .spyOn(service, 'add_new_language')
+        .mockResolvedValue(newCurriculumData);
 
       const result = await service.add_new_language(userId, newCurriculumData);
 
-      expect(service.add_new_language).toHaveBeenCalledWith(userId, newCurriculumData);
+      expect(service.add_new_language).toHaveBeenCalledWith(
+        userId,
+        newCurriculumData,
+      );
       expect(result).toEqual(newCurriculumData);
     });
 
@@ -249,9 +278,17 @@ describe('UserService', () => {
 
       jest.spyOn(service, 'update_study').mockResolvedValue(newStudyData);
 
-      const result = await service.update_study(userId, studyIndex, newStudyData);
+      const result = await service.update_study(
+        userId,
+        studyIndex,
+        newStudyData,
+      );
 
-      expect(service.update_study).toHaveBeenCalledWith(userId, studyIndex, newStudyData);
+      expect(service.update_study).toHaveBeenCalledWith(
+        userId,
+        studyIndex,
+        newStudyData,
+      );
       expect(result).toEqual(newStudyData);
     });
 
@@ -264,11 +301,21 @@ describe('UserService', () => {
       const experienceIndex = 0;
       const newExperienceData = {};
 
-      jest.spyOn(service, 'update_experience').mockResolvedValue(newExperienceData);
+      jest
+        .spyOn(service, 'update_experience')
+        .mockResolvedValue(newExperienceData);
 
-      const result = await service.update_experience(userId, experienceIndex, newExperienceData);
+      const result = await service.update_experience(
+        userId,
+        experienceIndex,
+        newExperienceData,
+      );
 
-      expect(service.update_experience).toHaveBeenCalledWith(userId, experienceIndex, newExperienceData);
+      expect(service.update_experience).toHaveBeenCalledWith(
+        userId,
+        experienceIndex,
+        newExperienceData,
+      );
       expect(result).toEqual(newExperienceData);
     });
 
@@ -283,9 +330,17 @@ describe('UserService', () => {
 
       jest.spyOn(service, 'update_course').mockResolvedValue(newCourseData);
 
-      const result = await service.update_course(userId, courseIndex, newCourseData);
+      const result = await service.update_course(
+        userId,
+        courseIndex,
+        newCourseData,
+      );
 
-      expect(service.update_course).toHaveBeenCalledWith(userId, courseIndex, newCourseData);
+      expect(service.update_course).toHaveBeenCalledWith(
+        userId,
+        courseIndex,
+        newCourseData,
+      );
       expect(result).toEqual(newCourseData);
     });
 
@@ -300,9 +355,17 @@ describe('UserService', () => {
 
       jest.spyOn(service, 'update_language').mockResolvedValue(newLanguageData);
 
-      const result = await service.update_language(userId, languageIndex, newLanguageData);
+      const result = await service.update_language(
+        userId,
+        languageIndex,
+        newLanguageData,
+      );
 
-      expect(service.update_language).toHaveBeenCalledWith(userId, languageIndex, newLanguageData);
+      expect(service.update_language).toHaveBeenCalledWith(
+        userId,
+        languageIndex,
+        newLanguageData,
+      );
       expect(result).toEqual(newLanguageData);
     });
 
@@ -334,7 +397,10 @@ describe('UserService', () => {
 
       const result = await service.delete_experience(userId, experienceIndex);
 
-      expect(service.delete_experience).toHaveBeenCalledWith(userId, experienceIndex);
+      expect(service.delete_experience).toHaveBeenCalledWith(
+        userId,
+        experienceIndex,
+      );
       expect(result).toEqual([]);
     });
 
@@ -366,7 +432,10 @@ describe('UserService', () => {
 
       const result = await service.delete_language(userId, languageIndex);
 
-      expect(service.delete_language).toHaveBeenCalledWith(userId, languageIndex);
+      expect(service.delete_language).toHaveBeenCalledWith(
+        userId,
+        languageIndex,
+      );
       expect(result).toEqual([]);
     });
 
