@@ -421,7 +421,8 @@ class UserService {
       throw new NotFoundException('Usuario no encontrado');
     }
     const descripcionId = user.descripcion;
-    const descripcion = await this.curriculumModel.findByIdAndUpdate(descripcionId,newDesc, { new: true });
+
+    const descripcion = await this.descriptionModel.findByIdAndUpdate(descripcionId,newDesc, { new: true });
     return descripcion;
   }
 }
