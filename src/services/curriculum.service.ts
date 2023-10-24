@@ -80,6 +80,56 @@ class CurriculumService{
           const payload = {courses:courses, experiences: experiences, languages: languages, skills: skills, studies:studies}
           return payload;
     }
+    async read_courses(userId){
+      if (!userId) {
+        throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Se requiere ID' });
+      }
+      const user = await this.userModel.findById(userId);
+      if (!user) {
+        throw new NotFoundException('Usuario no encontrado');
+      }
+      return await this.courseModel.find({userId: user._id})
+    }
+    async read_experiences(userId){
+      if (!userId) {
+        throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Se requiere ID' });
+      }
+      const user = await this.userModel.findById(userId);
+      if (!user) {
+        throw new NotFoundException('Usuario no encontrado');
+      }
+      return await this.experienceModel.find({userId: user._id})
+    }
+    async read_languages(userId){
+      if (!userId) {
+        throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Se requiere ID' });
+      }
+      const user = await this.userModel.findById(userId);
+      if (!user) {
+        throw new NotFoundException('Usuario no encontrado');
+      }
+      return await this.languageModel.find({userId: user._id})
+    }
+    async read_skills(userId){
+      if (!userId) {
+        throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Se requiere ID' });
+      }
+      const user = await this.userModel.findById(userId);
+      if (!user) {
+        throw new NotFoundException('Usuario no encontrado');
+      }
+      return await this.skillModel.find({userId: user._id})
+    }
+    async read_studies(userId){
+      if (!userId) {
+        throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Se requiere ID' });
+      }
+      const user = await this.userModel.findById(userId);
+      if (!user) {
+        throw new NotFoundException('Usuario no encontrado');
+      }
+      return await this.studyModel.find({userId: user._id})
+    }
     async update_course(userID,course_name, newcourseData) {
         if (!userID) {
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Se requiere ID' });
