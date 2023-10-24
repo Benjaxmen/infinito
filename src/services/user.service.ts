@@ -420,10 +420,8 @@ class UserService {
     if (!user) {
       throw new NotFoundException('Usuario no encontrado');
     }
-    console.log(user)
     const descripcionId = user.descripcion;
     const descripcion = await this.curriculumModel.findByIdAndUpdate(descripcionId,newDesc, { new: true });
-    console.log(newDesc)
     return descripcion;
   }
 }
