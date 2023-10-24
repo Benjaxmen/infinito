@@ -1,7 +1,6 @@
 import * as mongoose from 'mongoose';
 
 const CurriculumSchema = new mongoose.Schema({
-  //userId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
   studies: [{
     name: { type: String, required: true },
     type: { type: String, required: true },
