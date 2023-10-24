@@ -73,6 +73,26 @@ export class UserController {
   async readCurriculum(@Param('id') userId) {
     return this.curriculumService.read_curr(userId);
   }
+  @Get(':id/study')
+  async readStudy(@Param('id') userId) {
+    return this.curriculumService.read_studies(userId);
+  }
+  @Get(':id/skill')
+  async readSkill(@Param('id') userId) {
+    return this.curriculumService.read_skills(userId);
+  }
+  @Get(':id/language')
+  async readLanguage(@Param('id') userId) {
+    return this.curriculumService.read_languages(userId);
+  }
+  @Get(':id/experience')
+  async readExperience(@Param('id') userId) {
+    return this.curriculumService.read_experiences(userId);
+  }
+  @Get(':id/course')
+  async readCourse(@Param('id') userId) {
+    return this.curriculumService.read_courses(userId);
+  }
 
   @Put(':id/study')
   async updateCurriculumStudy(@Param('id') userId, @Body() payload: any) 
