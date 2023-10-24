@@ -1,10 +1,10 @@
 import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common';
 import UserService from '../services/user.service';
-//import CurriculumService from 'src/services/curriculum.service';
+import CurriculumService from '../services/curriculum.service';
 
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService,private readonly curriculumService: CurriculumService) {}
 
 
   @Post()
@@ -39,99 +39,90 @@ export class UserController {
   async editarDescripcion(@Param('id') userId: string, @Body() descripcion: any){
     return this.userService.update_description(userId,descripcion)
   }
-
   @Post(':id/curriculum')
-  async createCurriculum(@Param('id') userId: string, @Body() curriculumData: any) {
-    return this.userService.create_curr(userId, curriculumData);
+  async createCurriculum(@Param('id') userId: string, @Body() Data: any){
+    const course =await this.curriculumService.create_course(userId, Data.courses);
+    const skill = await this.curriculumService.create_skill(userId, Data.skills);
+    const experience =await this.curriculumService.create_experience(userId, Data.experiences);
+    const language = await this.curriculumService.create_language(userId, Data.languages);
+    const study =await this.curriculumService.create_study(userId, Data.studies);
+    return {course,skill,experience,language,study}
+  }
+  @Post(':id/course')
+  async createCourse(@Param('id') userId: string, @Body() courseData: any) {
+    return this.curriculumService.create_course(userId, courseData);
+  }
+  @Post(':id/skill')
+  async createSkill(@Param('id') userId: string, @Body() skillData: any) {
+    return this.curriculumService.create_skill(userId, skillData);
+  }
+  @Post(':id/experience')
+  async createExperience(@Param('id') userId: string, @Body() experienceData: any) {
+    return this.curriculumService.create_experience(userId, experienceData);
+  }
+  @Post(':id/language')
+  async createLanguage(@Param('id') userId: string, @Body() languageData: any) {
+    return this.curriculumService.create_language(userId, languageData);
+  }
+  @Post(':id/study')
+  async createStudy(@Param('id') userId: string, @Body() studyData: any) {
+    return this.curriculumService.create_study(userId, studyData);
   }
 
   @Get(':id/curriculum')
   async readCurriculum(@Param('id') userId) {
-    return this.userService.read_curr(userId);
+    return this.curriculumService.read_curr(userId);
   }
 
-  @Get(':id/curriculum/studies')
-  async readCurriculumStudies(@Param('id') userId) {
-    return this.userService.read_curr_studies(userId);
-  }
-
-  @Get(':id/curriculum/experiences')
-  async readCurriculumExperiences(@Param('id') userId) {
-    return this.userService.read_curr_experiences(userId);
-  }
-
-  @Get(':id/curriculum/courses')
-  async readCurriculumCourses(@Param('id') userId) {
-    return this.userService.read_curr_courses(userId);
-  }
-
-  @Get(':id/curriculum/languages')
-  async readCurriculumLanguages(@Param('id') userId) {
-    return this.userService.read_curr_languages(userId);
-  }
-
-  @Put(':id/curriculum/studies')
-  async updateCurriculumStudies(@Param('id') userId, @Body() newUserData) {
-    return this.userService.add_new_study(userId, newUserData);
-  }
-
-  @Put(':id/curriculum/experiences')
-  async updateCurriculumExperiences(@Param('id') userId, @Body() newUserData) {
-    return this.userService.add_new_experience(userId, newUserData);
-  }
-
-  @Put(':id/curriculum/courses')
-  async updateCurriculumCourses(@Param('id') userId, @Body() newUserData) {
-    return this.userService.add_new_course(userId, newUserData);
-  }
-
-  @Put(':id/curriculum/languages')
-  async updateCurriculumLanguages(@Param('id') userId, @Body() newUserData) {
-    return this.userService.add_new_language(userId, newUserData);
-  }
-
-  @Put(':id/curriculum/studies/:index')
-  async updateCurriculumStudy(@Param('id') userId, @Param('index') index: number, @Body() newUserData) 
+  @Put(':id/study')
+  async updateCurriculumStudy(@Param('id') userId, @Body() payload: any) 
   {
-    return this.userService.update_study(userId, index, newUserData);
+    return this.curriculumService.update_study(userId,payload.name , payload.newstudyData);
   }
-
-  @Put(':id/curriculum/experiences/:index')
-  async updateCurriculumExperience(@Param('id') userId, @Param('index') index: number, @Body() newUserData) 
+  @Put(':id/course')
+  async updateCurriculumCourse(@Param('id') userId, @Body() payload: any) 
   {
-    return this.userService.update_experience(userId, index, newUserData);
+    return this.curriculumService.update_course(userId,payload.name , payload.newcourseData);
   }
-
-  @Put(':id/curriculum/courses/:index')
-  async updateCurriculumCourse(@Param('id') userId, @Param('index') index: number, @Body() newUserData) 
+  @Put(':id/experience')
+  async updateCurriculumExperience(@Param('id') userId, @Body() payload: any) 
   {
-    return this.userService.update_course(userId, index, newUserData);
+    return this.curriculumService.update_experience(userId,payload.position , payload.newexperienceData);
   }
-
-  @Put(':id/curriculum/languages/:index')
-  async updateCurriculumLanguage(@Param('id') userId, @Param('index') index: number, @Body() newUserData) 
+  @Put(':id/language')
+  async updateCurriculumLanguage(@Param('id') userId, @Body() payload: any) 
   {
-    return this.userService.update_language(userId, index, newUserData);
+    return this.curriculumService.update_language(userId,payload.name , payload.newlanguageData);
   }
-
-  @Delete(':id/curriculum/studies/:index')
-  async deleteCurriculumStudy(@Param('id') userId, @Param('index') index: number) {
-    return this.userService.delete_study(userId, index);
+  @Put(':id/skill')
+  async updateCurriculumSkill(@Param('id') userId, @Body() payload: any) 
+  {
+    return this.curriculumService.update_skill(userId,payload.name , payload.newskillData);
   }
-
-  @Delete(':id/curriculum/experiences/:index')
-  async deleteCurriculumExperience(@Param('id') userId, @Param('index') index: number) {
-    return this.userService.delete_experience(userId, index);
+  @Delete(':id/study')
+  async deleteCurriculumStudy(@Param('id') userId, @Body() payload: any) 
+  {
+    return this.curriculumService.delete_study(userId,payload.name , payload.newstudyData);
   }
-
-  @Delete(':id/curriculum/courses/:index')
-  async deleteCurriculumCourse(@Param('id') userId, @Param('index') index: number) {
-    return this.userService.delete_course(userId, index);
+  @Delete(':id/course')
+  async deleteCurriculumCourse(@Param('id') userId, @Body() payload: any) 
+  {
+    return this.curriculumService.delete_course(userId,payload.name , payload.newcourseData);
   }
-
-  @Delete(':id/curriculum/languages/:index')
-  async deleteCurriculumLanguage(@Param('id') userId, @Param('index') index: number) {
-    return this.userService.delete_language(userId, index);
+  @Delete(':id/experience')
+  async deleteCurriculumExperience(@Param('id') userId, @Body() payload: any) 
+  {
+    return this.curriculumService.delete_experience(userId,payload.position , payload.newexperienceData);
+  }
+  @Delete(':id/language')
+  async deleteCurriculumLanguage(@Param('id') userId, @Body() payload: any) 
+  {
+    return this.curriculumService.delete_language(userId,payload.name , payload.newlanguageData);
+  }
+  @Delete(':id/skill')
+  async deleteCurriculumSkill(@Param('id') userId, @Body() payload: any) 
+  {
+    return this.curriculumService.delete_skill(userId,payload.name , payload.newskillData);
   }
   @Get(':id/descripcion')
   async findAll_desc() {
