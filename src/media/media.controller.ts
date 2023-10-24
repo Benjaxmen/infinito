@@ -2,6 +2,7 @@ import {
     Body,
     Controller,
     Get,
+    Delete,
     NotFoundException,
     Param,
     Post,
@@ -59,4 +60,17 @@ import {
       res.setHeader("Cache-Control", "max-age=60d");
       res.end(storageFile.buffer);
     }
+    @Delete(":mediaId")
+    async deleteMedia(@Param("mediaId") mediaId: string, @Res() res: Response) {
+      try {
+        return await this.storageService.delete("media/" + mediaId);
+      } catch (e) {
+        if (e.message.toString().includes("No such object")) {
+          throw new NotFoundException("image not found");
+        } else {
+          throw new ServiceUnavailableException("internal error");
+        }
+      }
+    }
+    
   }
