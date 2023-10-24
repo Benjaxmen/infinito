@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { HttpStatus, BadRequestException } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt'; // Importa JwtModule
-import * as mongoose from 'mongoose';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import UserSchema from '../schemas/user.schema';
@@ -28,7 +27,7 @@ describe('AuthController', () => {
 
     authService = module.get<AuthService>(AuthService);
     service = module.get<UserService>(UserService);
-    userModel = mongoose.model('User', UserSchema);
+    controller = module.get<AuthController>(AuthController);
   });
   describe('login', () => {
     it('should return a JSON web token when the email and password combination is correct', async () => {
