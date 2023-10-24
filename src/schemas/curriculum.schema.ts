@@ -8,7 +8,6 @@ const CurriculumSchema = new mongoose.Schema({
   institution: { type: String, required: true },
   admissionDate: { type: Date, required: true },
   graduationDate: { type: Date, required: true },
-  };
       description: { type: String },
     },
   ],
