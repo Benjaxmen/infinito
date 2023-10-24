@@ -4,10 +4,10 @@ const CurriculumSchema = new mongoose.Schema({
   studies: [
     {
   graduationDate: { type: Date, required: true },
-      type: { type: String, required: true },
-      institution: { type: String, required: true },
-      admissionDate: { type: Date, required: true },
-      graduationDate: { type: Date, required: true },
+  type: { type: String, required: true },
+  institution: { type: String, required: true },
+  admissionDate: { type: Date, required: true },
+  graduationDate: { type: Date, required: true },
       description: { type: String },
     },
   ],
