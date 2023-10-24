@@ -30,7 +30,7 @@ const CurriculumSchema = new mongoose.Schema({
   ],
   description: { type: String },
   skill: { type: String },
-  };
+  });
   
   const DescriptionSchema = new mongoose.Schema({
   description: { type: String },
