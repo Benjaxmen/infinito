@@ -68,7 +68,7 @@ class UserService {
     return user;
   }
 
-  async create_curr(userId, curriculumData) {
+  async create_curriculum(userId, curriculumData) {
     if(!curriculumData.studies || !curriculumData.experiences || !curriculumData.courses || !curriculumData.languages){
       throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Ingresa datos válidos' })
     }
@@ -151,6 +151,31 @@ class UserService {
   }
       
   async add_new_study(userId: string, newCurriculumData: { studies: any[] }): Promise<any[]> {
+    if (!userId) {
+      throw new BadRequestException('Se requiere ID');
+    }
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+    const curriculumId = user.curriculum;
+    if (!curriculumId) {
+      throw new NotFoundException('Currículum no encontrado');
+    }
+  
+    const curriculum = await this.curriculumModel.findByIdAndUpdate(curriculumId, {
+      $push: {
+        studies: {
+          $each: newCurriculumData.studies
+        }
+      }
+  
+    }, { new: true });
+    if (!curriculum) {
+      throw new NotFoundException('Currículum no encontrado');
+    }
+  
+    return curriculum.studies;
   if (!userId) {
     throw new BadRequestException('Se requiere ID');
   }
@@ -185,6 +210,28 @@ class UserService {
     if (!userId) {
       throw new BadRequestException('Se requiere ID');
     }
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+    const curriculumId = user.curriculum;
+    if (!curriculumId) {
+      throw new NotFoundException('Currículum no encontrado');
+    }
+    const curriculum = await this.curriculumModel.findByIdAndUpdate(curriculumId, {
+      $push: {
+        experiences: {
+          $each: newCurriculumData.experiences
+        }
+      }
+    }, { new: true });
+    if (!curriculum) {
+      throw new NotFoundException('Currículum no encontrado');
+    }
+    return curriculum.experiences;
+    if (!userId) {
+      throw new BadRequestException('Se requiere ID');
+    }
     if (!newCurriculumData || !newCurriculumData.experiences || !Array.isArray(newCurriculumData.experiences)) {
       throw new BadRequestException('Datos de experiencia inválidos');
     }
@@ -213,6 +260,28 @@ class UserService {
     if (!userId) {
       throw new BadRequestException('Se requiere ID');
     }
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+    const curriculumId = user.curriculum;
+    if (!curriculumId) {
+      throw new NotFoundException('Currículum no encontrado');
+    }
+    const curriculum = await this.curriculumModel.findByIdAndUpdate(curriculumId, {
+      $push: {
+        courses: {
+          $each: newCurriculumData.courses
+        }
+      }
+    }, { new: true });
+    if (!curriculum) {
+      throw new NotFoundException('Currículum no encontrado');
+    }
+    return curriculum.courses;
+    if (!userId) {
+      throw new BadRequestException('Se requiere ID');
+    }
     if (!newCurriculumData || !newCurriculumData.courses || !Array.isArray(newCurriculumData.courses)) {
       throw new BadRequestException('Datos de curso inválidos');
     }
@@ -238,6 +307,28 @@ class UserService {
   }
 
   async add_new_language(userId: string, newCurriculumData: { languages: any[] }): Promise<any[]> {
+    if (!userId) {
+      throw new BadRequestException('Se requiere ID');
+    }
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+    const curriculumId = user.curriculum;
+    if (!curriculumId) {
+      throw new NotFoundException('Currículum no encontrado');
+    }
+    const curriculum = await this.curriculumModel.findByIdAndUpdate(curriculumId, {
+      $push: {
+        languages: {
+          $each: newCurriculumData.languages
+        }
+      }
+    }, { new: true });
+    if (!curriculum) {
+      throw new NotFoundException('Currículum no encontrado');
+    }
+    return curriculum.languages;
     if (!userId) {
       throw new BadRequestException('User ID is required');
     }
@@ -278,9 +369,33 @@ class UserService {
     curriculum.studies[studyIndex] = { ...curriculum.studies[studyIndex], ...newStudyData };
     await curriculum.save();
     return curriculum.studies[studyIndex];
+    const user = await this.userModel.findById(userId);
+    const curriculumId = user.curriculum;
+    const curriculum = await this.curriculumModel.findById(curriculumId);
+    if (studyIndex < 0 || studyIndex >= curriculum.studies.length) {
+      throw new BadRequestException('Índice de estudio inválido');
+    }
+    if (!newStudyData || Object.keys(newStudyData).length === 0) {
+      throw new BadRequestException('Los datos del estudio no pueden estar vacíos');
+    }
+    curriculum.studies[studyIndex] = { ...curriculum.studies[studyIndex], ...newStudyData };
+    await curriculum.save();
+    return curriculum.studies[studyIndex];
   }
 
   async update_experience(userId: string, experienceIndex: number, newExperienceData: any) {
+    const user = await this.userModel.findById(userId);
+    const curriculumId = user.curriculum;
+    const curriculum = await this.curriculumModel.findById(curriculumId);
+    if (experienceIndex < 0 || experienceIndex >= curriculum.experiences.length) {
+      throw new BadRequestException('Índice de experiencia inválido');
+    }
+    if (!newExperienceData || Object.keys(newExperienceData).length === 0) {
+      throw new BadRequestException('Los datos de la experiencia no pueden estar vacíos');
+    }
+    curriculum.experiences[experienceIndex] = { ...curriculum.experiences[experienceIndex], ...newExperienceData };
+    await curriculum.save();
+    return curriculum.experiences[experienceIndex];
     const user = await this.userModel.findById(userId);
     const curriculumId = user.curriculum;
     const curriculum = await this.curriculumModel.findById(curriculumId);
@@ -308,9 +423,33 @@ class UserService {
     curriculum.courses[courseIndex] = { ...curriculum.courses[courseIndex], ...newCourseData };
     await curriculum.save();
     return curriculum.courses[courseIndex];
+    const user = await this.userModel.findById(userId);
+    const curriculumId = user.curriculum;
+    const curriculum = await this.curriculumModel.findById(curriculumId);
+    if (courseIndex < 0 || courseIndex >= curriculum.courses.length) {
+      throw new BadRequestException('Índice de curso inválido');
+    }
+    if (!newCourseData || Object.keys(newCourseData).length === 0) {
+      throw new BadRequestException('Los datos del curso no pueden estar vacíos');
+    }
+    curriculum.courses[courseIndex] = { ...curriculum.courses[courseIndex], ...newCourseData };
+    await curriculum.save();
+    return curriculum.courses[courseIndex];
   }
 
   async update_language(userId: string, languageIndex: number, newLanguageData: any) {
+    const user = await this.userModel.findById(userId);
+    const curriculumId = user.curriculum;
+    const curriculum = await this.curriculumModel.findById(curriculumId);
+    if (languageIndex < 0 || languageIndex >= curriculum.languages.length) {
+      throw new BadRequestException('Índice de idioma inválido');
+    }
+    if (!newLanguageData || Object.keys(newLanguageData).length === 0) {
+      throw new BadRequestException('Los datos del idioma no pueden estar vacíos');
+    }
+    curriculum.languages[languageIndex] = { ...curriculum.languages[languageIndex], ...newLanguageData };
+    await curriculum.save();
+    return curriculum.studies[languageIndex];
     const user = await this.userModel.findById(userId);
     const curriculumId = user.curriculum;
     const curriculum = await this.curriculumModel.findById(curriculumId);
