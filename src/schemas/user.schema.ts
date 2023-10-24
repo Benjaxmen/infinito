@@ -11,6 +11,7 @@ const UserSchema = new mongoose.Schema({
   rut: { type: String, required: true },
   cellphone: { type: String, required: true },
   descripcion: {type:mongoose.Schema.Types.ObjectId, ref: 'Descripcion'},
+  media:{type:mongoose.Schema.Types.ObjectId, ref: 'Media'}
   //application: {type: mongoose.Schema.Types.ObjectId, ref: 'Application'},
 });
 
