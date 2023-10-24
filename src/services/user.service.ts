@@ -1,9 +1,9 @@
 import * as mongoose from 'mongoose';
-import UserSchema from '../schemas/user.schema';
+import UserSchema from './schemas/user.schema';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { isEmail } from 'validator';
 import * as bcrypt from 'bcrypt';
-import CurriculumSchema from 'src/schemas/curriculum.schema';
+import CurriculumSchema from './schemas/curriculum.schema';
 
 class UserService {
   private userModel = mongoose.model('User', UserSchema);
