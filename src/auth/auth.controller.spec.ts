@@ -13,7 +13,6 @@ describe('AuthController', () => {
   let controller: AuthController;
   console.log('AuthService:', authService);
 
-
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
@@ -34,14 +33,15 @@ describe('AuthController', () => {
       const email = 'test@example.com';
       const password = 'password';
       const token = 'mocked_token';
-    
-      jest.spyOn(authService, 'login').mockResolvedValue({ access_token: token }); // Devolver un objeto con la estructura correcta
-    
+
+      jest
+        .spyOn(authService, 'login')
+        .mockResolvedValue({ access_token: token }); // Devolver un objeto con la estructura correcta
+
       const result = await controller.login({ email, password });
-    
+
       expect(result).toEqual({ access_token: token }); // Verificar que el resultado tenga la estructura correcta
     });
-    
 
     it('should throw a BadRequestException when the email and password combination is incorrect', async () => {
       const email = 'test@example.com';
@@ -53,7 +53,9 @@ describe('AuthController', () => {
         await controller.login({ email, password });
       } catch (error) {
         expect(error).toBeInstanceOf(BadRequestException);
-        expect(error.message).toBe('Correo o contraseña incorrectos, intente nuevamente.');
+        expect(error.message).toBe(
+          'Correo o contraseña incorrectos, intente nuevamente.',
+        );
         expect(error.getStatus()).toBe(HttpStatus.BAD_REQUEST);
       }
     });
