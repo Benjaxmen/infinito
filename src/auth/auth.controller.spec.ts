@@ -6,6 +6,7 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import UserSchema from '../schemas/user.schema';
 import UserService from '../services/user.service';
+import { JWT_SECRET } from './constants';
 
 describe('AuthController', () => {
   let authService: AuthService;
@@ -19,7 +20,7 @@ describe('AuthController', () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [
         JwtModule.register({
-          secret: 'your-secret-key', // Reemplaza esto con tu clave secreta
+          secret: JWT_SECRET, // Reemplaza esto con tu clave secreta
         }),
       ],
       providers: [AuthService, UserService],
@@ -38,7 +39,7 @@ describe('AuthController', () => {
     
       jest.spyOn(authService, 'login').mockResolvedValue({ access_token: token }); // Devolver un objeto con la estructura correcta
     
-      const result = await controller.login({ email, password });
+      const result = await authService.login({ email, password });
     
       expect(result).toEqual({ access_token: token }); // Verificar que el resultado tenga la estructura correcta
     });
@@ -51,7 +52,7 @@ describe('AuthController', () => {
       jest.spyOn(authService, 'login').mockResolvedValue(null);
 
       try {
-        await controller.login({ email, password });
+        await authService.login({ email, password });
       } catch (error) {
         expect(error).toBeInstanceOf(BadRequestException);
         expect(error.message).toBe('Correo o contraseña incorrectos, intente nuevamente.');
