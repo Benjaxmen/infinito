@@ -5,10 +5,12 @@ import { isEmail } from 'validator';
 import * as bcrypt from 'bcrypt';
 import DescripcionSchema from '../schemas/descripcion.schema';
 import MediaSchema from 'src/schemas/media.schema';
+import DocSchema from 'src/schemas/doc.schema';
 class UserService {
   private userModel = mongoose.model('User', UserSchema);
   private descriptionModel = mongoose.model('Description',DescripcionSchema)
   private mediaModel = mongoose.model('Media',MediaSchema)
+  private docModel = mongoose.model('Doc',DocSchema)
   
   async create(userData) {
     const existingUser = await this.userModel.findOne({ email: userData.email });
@@ -102,6 +104,17 @@ class UserService {
   await media.save()
   await this.userModel.findByIdAndUpdate(userId, { $set: { media: media._id } })
   return media._id;
+  }
+  async add_doc(userId:string){
+    const user =await this.userModel.findById(userId);
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+    const doc= new this.docModel()
+  await doc.save()
+  await this.userModel.findByIdAndUpdate(userId, { $set: { doc: doc._id } })
+  return doc._id;
+
   }
 }
 
