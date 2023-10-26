@@ -20,7 +20,6 @@ class CurriculumService{
           }
         const payload ={userId: userID, name: courseData.name, institution:courseData.institution, completionDate:courseData.completionDate, description:courseData.description}
         const course = new this.courseModel(payload)
-        await course.populate('userId')
         await course.save()
         return course;
     }
@@ -30,7 +29,6 @@ class CurriculumService{
           }
         const payload ={userId: userID, name: skillData.name, level: skillData.level}
         const skill = new this.skillModel(payload)
-        await skill.populate('userId')
         await skill.save()
         return skill;
     }
@@ -40,7 +38,6 @@ class CurriculumService{
           }
         const payload ={userId: userID, position: experienceData.position, company:experienceData.company, startDate:experienceData.startDate, endDate:experienceData.endDate, description:experienceData.description}
         const experience = new this.experienceModel(payload)
-        await experience.populate('userId')
         await experience.save()
         return experience;
     }
@@ -50,7 +47,6 @@ class CurriculumService{
           }
         const payload ={userId: userID, name: languageData.name, level: languageData.level}
         const language = new this.languageModel(payload)
-        await language.populate('userId')
         await language.save()
         return language;
     }
@@ -60,7 +56,6 @@ class CurriculumService{
           }
         const payload ={userId: userID, name: studyData.name,type: studyData.type, institution:studyData.institution, admissionDate:studyData.admissionDate, graduationDate:studyData.graduationDate, description:studyData.description}
         const study = new this.studyModel(payload)
-        await study.populate('userId')
         await study.save()
         return study;
     }
