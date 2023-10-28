@@ -56,8 +56,13 @@ class UserService {
   }
   
   async read(userId) {
-    const user = await this.userModel.find({_id: userId});
-    return user;
+    const user = await this.userModel.findOne({_id: userId});
+    if(!user){
+      throw new NotFoundException('Usuario no encontrado');
+
+
+    }
+    return {rut: user.rut,correo: user.email,nacimiento: user.dateofbirth, prof: user.profession,cel: user.cellphone,id: user._id, foto: user.media, desc:user.descripcion,pdf:user.doc};
   }
 
   async update(userId, newUserData) {
