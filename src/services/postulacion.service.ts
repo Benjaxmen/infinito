@@ -8,7 +8,7 @@ class PostulacionService{
     private ofertaModel = mongoose.model("Oferta",OfertaSchema);
     private postulanteModel = mongoose.model("Postulante",PostulanteSchema);
     async create_offer(offer_data ){
-        const user = await this.userModel.findById(offer_data.userId)
+        const user = await this.userModel.findById(offer_data.reclutadorId)
         if (!user) {
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Este usuario no existe' })
           }
@@ -34,6 +34,24 @@ class PostulacionService{
         }
         return offer;
     }
+    async get_offer(offerId){
+        const offer = await this.ofertaModel.findById(offerId)
+        if (!offer) {
+            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Esta oferta no existe' })
+          }
+        return offer
+    }
+    async get_offers(userId){
+        const offer = await this.ofertaModel.find({reclutadorId: userId})
+        if (!offer) {
+            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Este usuario no ha creado ofertas' })
+          }
+        return offer
+    }
+    async get_all_offers(){
+        const offers = await this.ofertaModel.find()
+        return offers
+    }
     async delete_offer(offerId){
         try{await this.ofertaModel.findOneAndDelete(offerId)}
         catch(error){throw new NotFoundException("Object not found");}
@@ -55,6 +73,35 @@ class PostulacionService{
     async delete_postulacion(postulacionId){
         try { await this.postulanteModel.findByIdAndDelete(postulacionId);            
         } catch (error) {throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Esta postulación no existe' })}
+        return ("Borrado exitoso")
     }
+    async buscar_postulaciones_usuario(userId){
+        const postulante = await this.userModel.findById(userId)
+        if (!postulante) {
+            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Este usuario no existe' })
+          }
+        const postulaciones = await this.postulanteModel.find({userId:postulante._id})
+        if (!postulaciones){throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Este usuario no posee postulaciones' })
+        
+        }
+        return postulaciones;
+    }
+    async buscar_ofertas_postulaciones_usuario(userId) {
+        const postulante = await this.userModel.findById(userId);
+        if (!postulante) {
+            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Este usuario no existe' });
+        }
     
+        const postulaciones = await this.postulanteModel
+            .find({ userId: postulante._id })
+            .populate('oferta') // Utiliza populate para obtener los objetos de oferta completos
+            .exec();
+    
+        if (!postulaciones || postulaciones.length === 0) {
+            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Este usuario no posee postulaciones' });
+        }
+    
+        return postulaciones;
+    }
 }
+export default PostulacionService;
