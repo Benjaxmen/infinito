@@ -5,6 +5,7 @@ const OfertaSchema = new mongoose.Schema({
     descripcion: {type: String, required:true},
     empresa: {type:String, required: true},
     renta:{type: Number},
+    reclutadorId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}
     
 });
 export default OfertaSchema
