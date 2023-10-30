@@ -8,11 +8,12 @@ import { AuthModule } from './auth/auth.module';
 import { StorageModule } from './storage/storage.module';
 import { MediaModule } from './media/media.module';
 import CurriculumService from './services/curriculum.service';
-
+import PostulacionService from './services/postulacion.service';
+import { PostulacionController } from './controllers/postulacion.controller';
 
 @Module({
   imports: [ConfigModule.forRoot(), AuthModule, StorageModule, MediaModule],
-  controllers: [AppController, UserController],
-  providers: [AppService, UserService,CurriculumService],
+  controllers: [AppController, UserController,PostulacionController],
+  providers: [AppService, UserService,CurriculumService,PostulacionService],
 })
 export class AppModule {}

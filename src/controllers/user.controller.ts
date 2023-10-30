@@ -1,10 +1,9 @@
 import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common';
 import UserService from '../services/user.service';
 import CurriculumService from '../services/curriculum.service';
-import PostulacionService from 'src/services/postulacion.service';
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService,private readonly curriculumService: CurriculumService, private readonly PostulacionService) {}
+  constructor(private readonly userService: UserService,private readonly curriculumService: CurriculumService) {}
 
 
   @Post()
@@ -148,10 +147,7 @@ export class UserController {
   async findAll_desc() {
     return this.userService.findAll_desc();
   }
-  @Get('/ofertas')
-  async findall_off(){
-    return this.PostulacionService.get_all_offers()
-  }
+  
 
 
 }
