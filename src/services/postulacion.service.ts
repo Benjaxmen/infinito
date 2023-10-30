@@ -52,10 +52,22 @@ class PostulacionService{
         const offers = await this.ofertaModel.find()
         return offers
     }
-    async delete_offer(offerId){
-        try{await this.ofertaModel.findOneAndDelete(offerId)}
-        catch(error){throw new NotFoundException("Object not found");}
-        return ("Borrado exitoso")
+    async delete_offer(offerId,userId){
+        const oferta= await this.ofertaModel.findById(offerId)
+        if (!oferta){
+            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Oferta no encontrada' })
+        }
+        const user = await this.userModel.findById(offerId)
+        if (!user){
+            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Usuario no encontrado' })        }
+        if (oferta.reclutadorId==user._id||user.rol=="Admin"){
+            this.ofertaModel.findByIdAndDelete(offerId)
+            return ("Borrado exitoso")
+        }
+        else{
+            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'No se pudo borrar la oferta' })
+
+        }        
     
     }
     async find_offer(payload){
@@ -70,6 +82,10 @@ class PostulacionService{
         if (!oferta) {
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Esta oferta no existe' })
           }
+        const postulacion_previa = await this.postulanteModel.find({userId:postulanteId,oferta:offerId})
+        if(postulacion_previa){
+            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Ya postulaste a esta oferta' })
+        }
         const postulacion = await new this.postulanteModel({userId: postulante._id,oferta: oferta._id })
         return postulacion;
     }
