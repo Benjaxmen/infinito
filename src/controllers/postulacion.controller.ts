@@ -18,6 +18,14 @@ export class PostulacionController {
   async update_offer(@Param('id') offerId,@Body() payload: any){
     return this.postulacionService.update_offer(offerId,payload)
   }
+  @Delete(':id')
+  async delete_off(@Param('id') offerId,@Body() userId: any){
+    return await this.postulacionService.delete_offer(offerId,userId)
+  }
+  @Post(':id')
+  async postular(@Param('id') offerId, @Body() postulanteId: any){
+    return this.postulacionService.postulacion(offerId,postulanteId)
+  }
 
 
 
