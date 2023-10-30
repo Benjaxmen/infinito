@@ -58,6 +58,9 @@ class PostulacionService{
         return ("Borrado exitoso")
     
     }
+    async find_offer(payload){
+        return await this.ofertaModel.find(payload)
+    }
     async postulacion(offerId,postulanteId){
         const postulante = await this.userModel.findById(postulanteId)
         if (!postulante) {
