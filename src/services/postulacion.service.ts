@@ -57,7 +57,7 @@ class PostulacionService{
         if (!oferta){
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Oferta no encontrada' })
         }
-        const user = await this.userModel.findById(offerId)
+        const user = await this.userModel.findById(userId)
         if (!user){
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Usuario no encontrado' })        }
         if (oferta.reclutadorId==user._id||user.rol=="Admin"){
@@ -89,10 +89,19 @@ class PostulacionService{
         const postulacion = await new this.postulanteModel({userId: postulante._id,oferta: oferta._id })
         return postulacion;
     }
-    async delete_postulacion(postulacionId){
-        try { await this.postulanteModel.findByIdAndDelete(postulacionId);            
-        } catch (error) {throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Esta postulación no existe' })}
-        return ("Borrado exitoso")
+    async delete_postulacion(postulacionId,userId){
+        const user= await this.userModel.findById(userId)
+        if (!user) {
+            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Este usuario no existe' })
+          }
+        const postulacion= await this.postulanteModel.findById(postulacionId)
+        if (!postulacion) {
+            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Esta postulación no existe' })
+          }
+        if (postulacion.userId==userId||user.rol=="Admin"){
+            return await this.postulanteModel.findByIdAndDelete(postulacionId)
+
+        }
     }
     async buscar_postulaciones_usuario(userId){
         const postulante = await this.userModel.findById(userId)

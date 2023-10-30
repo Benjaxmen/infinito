@@ -26,8 +26,18 @@ export class PostulacionController {
   async postular(@Param('id') offerId, @Body() postulanteId: any){
     return this.postulacionService.postulacion(offerId,postulanteId)
   }
-
-
+  @Delete('/postulacion/:id')
+  async borrar_postulacion(@Param('id') postulacionId,@Body() userId: any){
+    return this.postulacionService.delete_postulacion(postulacionId,userId)
+  }
+  @Get('/postulacion/user/:id')
+  async buscar_postulaciones(@Param('id') userId){
+    return this.postulacionService.buscar_postulaciones_usuario(userId)
+  }
+  @Get('/postulacion/offer/:id/')
+  async buscar_ofertas(@Param('id') userId){
+    return this.postulacionService.buscar_ofertas_postulaciones_usuario(userId)
+  }
 
 
 
