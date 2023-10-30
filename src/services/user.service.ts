@@ -66,6 +66,9 @@ class UserService {
   }
 
   async update(userId, newUserData) {
+    if (!mongoose.Types.ObjectId.isValid(userId)){
+      throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
+  }
     const user = await this.userModel.findByIdAndUpdate(userId, newUserData, { new: true });
     return user;
   }
@@ -91,6 +94,9 @@ class UserService {
 
   }
   async update_description(userId: string,  newDesc: any) {
+    if (!mongoose.Types.ObjectId.isValid(userId)){
+      throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
+  }
     const user = await this.userModel.findById(userId);
     if (!user) {
       throw new NotFoundException('Usuario no encontrado');
@@ -101,6 +107,9 @@ class UserService {
     return descripcion;
   }
   async add_media(userId:string){
+    if (!mongoose.Types.ObjectId.isValid(userId)){
+      throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
+  }
     const user =await this.userModel.findById(userId);
     if (!user) {
       throw new NotFoundException('Usuario no encontrado');
@@ -111,6 +120,9 @@ class UserService {
   return media._id;
   }
   async add_doc(userId:string){
+    if (!mongoose.Types.ObjectId.isValid(userId)){
+      throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
+  }
     const user =await this.userModel.findById(userId);
     if (!user) {
       throw new NotFoundException('Usuario no encontrado');

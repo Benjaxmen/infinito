@@ -8,10 +8,14 @@ class PostulacionService{
     private ofertaModel = mongoose.model("Oferta",OfertaSchema);
     private postulanteModel = mongoose.model("Postulante",PostulanteSchema);
     async create_offer(offer_data ){
-        const user = await this.userModel.findById(offer_data.reclutadorId)
-        if (!user) {
+        if (!mongoose.Types.ObjectId.isValid(offer_data.reclutadorId)){
+            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
+        }
+        const user = await this.userModel.findOne({_id: offer_data.reclutadorId});
+        if(!user){
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Este usuario no existe' })
-          }
+        }          
+        
         if(!(user.rol == 'Reclutador')&&!(user.rol =='Admin')){
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Este usuario no tiene los permisos necesarios' })
         }
@@ -21,6 +25,9 @@ class PostulacionService{
 
     }
     async update_offer(offerId,offer_data){
+        if (!mongoose.Types.ObjectId.isValid(offer_data.offerId)){
+            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Este usuario no existe' })
+        }
         let offer: any;
         try { offer = await this.ofertaModel.findByIdAndUpdate(offerId, offer_data, {new:true});            
         } catch (error) {
@@ -35,6 +42,9 @@ class PostulacionService{
         return offer;
     }
     async get_offer(offerId){
+        if (!mongoose.Types.ObjectId.isValid(offerId)){
+            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
+        }
         const offer = await this.ofertaModel.findById(offerId)
         if (!offer) {
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Esta oferta no existe' })
@@ -42,7 +52,10 @@ class PostulacionService{
         return offer
     }
     async get_offers(userId){
-        const offer = await this.ofertaModel.find({reclutadorId: userId})
+        if (!mongoose.Types.ObjectId.isValid(userId.userId)){
+            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
+        }
+        const offer = await this.ofertaModel.find({reclutadorId: userId.userId})
         if (!offer) {
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Este usuario no ha creado ofertas' })
           }
@@ -52,12 +65,16 @@ class PostulacionService{
         const offers = await this.ofertaModel.find()
         return offers
     }
-    async delete_offer(offerId,userId){
+    async delete_offer(offerId,payload){
+        if (!mongoose.Types.ObjectId.isValid(offerId)||!mongoose.Types.ObjectId.isValid(payload.userId)){
+            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
+        }
         const oferta= await this.ofertaModel.findById(offerId)
         if (!oferta){
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Oferta no encontrada' })
         }
-        const user = await this.userModel.findById(userId)
+        const user = await this.userModel.findOne({_id: payload.userId})
+    
         if (!user){
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Usuario no encontrado' })        }
         if (oferta.reclutadorId==user._id||user.rol=="Admin"){
@@ -70,11 +87,14 @@ class PostulacionService{
         }        
     
     }
-    async find_offer(payload){
-        return await this.ofertaModel.find(payload)
+    async find_offer(filter: Record<string, any>){
+        return await this.ofertaModel.find(filter)
     }
-    async postulacion(offerId,postulanteId){
-        const postulante = await this.userModel.findById(postulanteId)
+    async postulacion(offerId,payload){
+        if (!mongoose.Types.ObjectId.isValid(offerId)||!mongoose.Types.ObjectId.isValid(payload.userId)){
+            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
+        }
+        const postulante = await this.userModel.findById(payload.postulanteId)
         if (!postulante) {
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Este usuario no existe' })
           }
@@ -82,15 +102,18 @@ class PostulacionService{
         if (!oferta) {
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Esta oferta no existe' })
           }
-        const postulacion_previa = await this.postulanteModel.find({userId:postulanteId,oferta:offerId})
+        const postulacion_previa = await this.postulanteModel.find({userId:postulante._id,oferta:oferta._id})
         if(postulacion_previa){
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Ya postulaste a esta oferta' })
         }
         const postulacion = await new this.postulanteModel({userId: postulante._id,oferta: oferta._id })
         return postulacion;
     }
-    async delete_postulacion(postulacionId,userId){
-        const user= await this.userModel.findById(userId)
+    async delete_postulacion(postulacionId,payload){
+        if (!mongoose.Types.ObjectId.isValid(payload.userId)){
+            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
+        }
+        const user= await this.userModel.findById(payload.userId)
         if (!user) {
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Este usuario no existe' })
           }
@@ -98,12 +121,15 @@ class PostulacionService{
         if (!postulacion) {
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Esta postulación no existe' })
           }
-        if (postulacion.userId==userId||user.rol=="Admin"){
+        if (postulacion.userId==user._id||user.rol=="Admin"){
             return await this.postulanteModel.findByIdAndDelete(postulacionId)
 
         }
     }
     async buscar_postulaciones_usuario(userId){
+        if (!mongoose.Types.ObjectId.isValid(userId)){
+            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
+        }
         const postulante = await this.userModel.findById(userId)
         if (!postulante) {
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Este usuario no existe' })
