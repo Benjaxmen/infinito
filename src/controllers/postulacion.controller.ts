@@ -19,12 +19,20 @@ export class PostulacionController {
     return this.postulacionService.update_offer(offerId,payload)
   }
   @Delete(':id')
-  async delete_off(@Param('id') offerId,@Body() userId){
-    return await this.postulacionService.delete_offer(offerId,userId)
+  async delete_off(@Param('id') offerId){
+    return await this.postulacionService.delete_offer(offerId)
+  }
+  @Get('recruiter/:id')
+  async get_offers_by_recruiter(@Param('id') userId){
+    return this.postulacionService.get_offers(userId)
+  }
+  @Get(':id')
+  async get_offer_by_id(@Param('id') offerId){
+    return this.postulacionService.get_offer(offerId)
   }
   @Post(':id')
   async postular(@Param('id') offerId, @Body() postulanteId){
-    return this.postulacionService.postulacion(offerId,postulanteId)
+    return this.postulacionService.postulacion(offerId, postulanteId)
   }
   @Delete('/postulacion/:id')
   async borrar_postulacion(@Param('id') postulacionId,@Body() payload){
@@ -34,6 +42,7 @@ export class PostulacionController {
   async buscar_postulaciones(@Param('id') userId){
     return this.postulacionService.buscar_postulaciones_usuario(userId)
   }
+  
   @Get('/postulacion/offer/:id/')
   async buscar_ofertas(@Param('id') userId){
     return this.postulacionService.buscar_ofertas_postulaciones_usuario(userId)
