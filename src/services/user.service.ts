@@ -85,8 +85,8 @@ class UserService {
   }
     const user = await this.userModel.findByIdAndUpdate(userId, newUserData, { new: true });
     const payload2={id: user._id, email: user.email, name: user.name,rol:user.rol,dob:user.dateofbirth,profession:user.profession,rut:user.rut,cellphone:user.cellphone}
-    const token= await this.JwtService.signAsync(payload2, { secret: JWT_SECRET })
-    return token;
+    
+    return payload2;
   }
 
   async delete(userId) {
