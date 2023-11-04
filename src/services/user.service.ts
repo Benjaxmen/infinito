@@ -58,6 +58,12 @@ class UserService {
     const user = await this.userModel.findOne(filter);
     return user;
   }
+  /**
+   * This method is used to find a user by their ID.
+   * @param {string} userId - The ID of the user to be found.
+   * @returns {Object} user - The user object if found.
+   * @throws {BadRequestException} If the userId is not valid or user is not found.
+   */
   async findOnebyId(userId){
     if (!mongoose.Types.ObjectId.isValid(userId)){
       throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
@@ -135,6 +141,12 @@ class UserService {
   await this.userModel.findByIdAndUpdate(userId, { $set: { media: media._id } })
   return media._id;
   }
+  /**
+   * This method is used to add a document to a user.
+   * @param {string} userId - The ID of the user to whom the document is to be added.
+   * @returns {string} doc._id - The ID of the added document.
+   * @throws {BadRequestException} If the userId is not valid or user is not found.
+   */
   async add_doc(userId:string){
     if (!mongoose.Types.ObjectId.isValid(userId)){
       throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
