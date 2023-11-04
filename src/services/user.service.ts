@@ -58,7 +58,17 @@ class UserService {
     const user = await this.userModel.findOne(filter);
     return user;
   }
-  
+  async findOnebyId(userId){
+    if (!mongoose.Types.ObjectId.isValid(userId)){
+      throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
+  }
+    const user = await this.userModel.findById(userId);
+    if (!user){throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Usuario no encontrado' })
+
+    }
+    return user;
+
+  }
   async read(userId) {
     const user = await this.userModel.findOne({_id: userId});
     if(!user){
@@ -125,7 +135,7 @@ class UserService {
   await this.userModel.findByIdAndUpdate(userId, { $set: { media: media._id } })
   return media._id;
   }
-  async add(userId:string){
+  async add_doc(userId:string){
     if (!mongoose.Types.ObjectId.isValid(userId)){
       throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
   }
