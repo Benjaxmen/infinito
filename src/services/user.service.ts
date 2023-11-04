@@ -6,11 +6,15 @@ import * as bcrypt from 'bcrypt';
 import DescripcionSchema from '../schemas/descripcion.schema';
 import MediaSchema from 'src/schemas/media.schema';
 import DocSchema from 'src/schemas/doc.schema';
+import { JwtService } from '@nestjs/jwt';
+import { JWT_SECRET } from '../auth/constants';
 class UserService {
+  private JwtService :JwtService
   private userModel = mongoose.model('User', UserSchema);
   private descriptionModel = mongoose.model('Description',DescripcionSchema)
   private mediaModel = mongoose.model('Media',MediaSchema)
   private docModel = mongoose.model('Doc',DocSchema)
+  
   
   async create(userData) {
     const existingUser = await this.userModel.findOne({ email: userData.email });
@@ -70,7 +74,9 @@ class UserService {
       throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
   }
     const user = await this.userModel.findByIdAndUpdate(userId, newUserData, { new: true });
-    return user;
+    const payload2={id: user._id, email: user.email, name: user.name,rol:user.rol,dob:user.dateofbirth,profession:user.profession,rut:user.rut,cellphone:user.cellphone}
+    const token= await this.JwtService.signAsync(payload2, { secret: JWT_SECRET })
+    return token;
   }
 
   async delete(userId) {
@@ -119,7 +125,7 @@ class UserService {
   await this.userModel.findByIdAndUpdate(userId, { $set: { media: media._id } })
   return media._id;
   }
-  async add_doc(userId:string){
+  async add(userId:string){
     if (!mongoose.Types.ObjectId.isValid(userId)){
       throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
   }
