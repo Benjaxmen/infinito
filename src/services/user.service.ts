@@ -6,10 +6,7 @@ import * as bcrypt from 'bcrypt';
 import DescripcionSchema from '../schemas/descripcion.schema';
 import MediaSchema from 'src/schemas/media.schema';
 import DocSchema from 'src/schemas/doc.schema';
-import { JwtService } from '@nestjs/jwt';
-import { JWT_SECRET } from '../auth/constants';
 class UserService {
-  private JwtService :JwtService
   private userModel = mongoose.model('User', UserSchema);
   private descriptionModel = mongoose.model('Description',DescripcionSchema)
   private mediaModel = mongoose.model('Media',MediaSchema)
