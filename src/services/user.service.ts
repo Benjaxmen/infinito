@@ -9,30 +9,46 @@ import DocSchema from 'src/schemas/doc.schema';
 import { JwtService } from '@nestjs/jwt';
 import { JWT_SECRET } from '../auth/constants';
 class UserService {
-  private JwtService :JwtService;
+  private JwtService: JwtService;
   private userModel = mongoose.model('User', UserSchema);
-  private descriptionModel = mongoose.model('Description',DescripcionSchema)
-  private mediaModel = mongoose.model('Media',MediaSchema)
-  private docModel = mongoose.model('Doc',DocSchema)
+  private descriptionModel = mongoose.model('Description', DescripcionSchema);
+  private mediaModel = mongoose.model('Media', MediaSchema);
+  private docModel = mongoose.model('Doc', DocSchema);
 
   constructor(private jwtService: JwtService) {
     this.JwtService = jwtService;
   }
-  
-  
-  async create(userData) {
-    const existingUser = await this.userModel.findOne({ email: userData.email });
-    if (existingUser) {
-      throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Ese correo electrónico ya está asociado a una cuenta' })
-    }
-    if(!isEmail(userData.email)){
-      throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Ingresa un correo electrónico válido' })
 
+  async create(userData) {
+    const existingUser = await this.userModel.findOne({
+      email: userData.email,
+    });
+    if (existingUser) {
+      throw new BadRequestException('Algo salió mal', {
+        cause: new Error(),
+        description: 'Ese correo electrónico ya está asociado a una cuenta',
+      });
     }
-    if(!userData.name || !userData.password || !userData.dateofbirth || !userData.profession || !userData.rut || !userData.cellphone){
-      throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Ingresa datos válidos' })
+    if (!isEmail(userData.email)) {
+      throw new BadRequestException('Algo salió mal', {
+        cause: new Error(),
+        description: 'Ingresa un correo electrónico válido',
+      });
     }
-    userData.password =await this.hashPassword(userData.password)
+    if (
+      !userData.name ||
+      !userData.password ||
+      !userData.dateofbirth ||
+      !userData.profession ||
+      !userData.rut ||
+      !userData.cellphone
+    ) {
+      throw new BadRequestException('Algo salió mal', {
+        cause: new Error(),
+        description: 'Ingresa datos válidos',
+      });
+    }
+    userData.password = await this.hashPassword(userData.password);
 
     const user = new this.userModel(userData);
     await user.save();
@@ -46,11 +62,10 @@ class UserService {
     return hashedPassword;
   }
 
-  async validatePassword(userId,password: string){
-    const user=await this.userModel.findOne({_id: userId});
-    const result=await bcrypt.compare(password,user.password);
+  async validatePassword(userId, password: string) {
+    const user = await this.userModel.findOne({ _id: userId });
+    const result = await bcrypt.compare(password, user.password);
     return result;
-
   }
 
   async findAll() {
@@ -62,34 +77,63 @@ class UserService {
     const user = await this.userModel.findOne(filter);
     return user;
   }
-  async findOnebyId(userId){
-    if (!mongoose.Types.ObjectId.isValid(userId)){
-      throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
-  }
+  async findOnebyId(userId) {
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      throw new BadRequestException('Algo salió mal', {
+        cause: new Error(),
+        description: 'Id no válido',
+      });
+    }
     const user = await this.userModel.findById(userId);
-    if (!user){throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Usuario no encontrado' })
-
+    if (!user) {
+      throw new BadRequestException('Algo salió mal', {
+        cause: new Error(),
+        description: 'Usuario no encontrado',
+      });
     }
     return user;
-
   }
   async read(userId) {
-    const user = await this.userModel.findOne({_id: userId});
-    if(!user){
+    const user = await this.userModel.findOne({ _id: userId });
+    if (!user) {
       throw new NotFoundException('Usuario no encontrado');
-
-
     }
-    return {rut: user.rut,correo: user.email,nacimiento: user.dateofbirth, prof: user.profession,cel: user.cellphone,id: user._id, foto: user.media, desc:user.descripcion,pdf:user.doc};
+    return {
+      rut: user.rut,
+      correo: user.email,
+      nacimiento: user.dateofbirth,
+      prof: user.profession,
+      cel: user.cellphone,
+      id: user._id,
+      foto: user.media,
+      desc: user.descripcion,
+      pdf: user.doc,
+    };
   }
 
   async update(userId, newUserData) {
-    if (!mongoose.Types.ObjectId.isValid(userId)){
-      throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
-  }
-    const user = await this.userModel.findByIdAndUpdate(userId, newUserData, { new: true });
-    const payload2={id: user._id, email: user.email, name: user.name,rol:user.rol,dob:user.dateofbirth,profession:user.profession,rut:user.rut,cellphone:user.cellphone}
-    const token= await this.JwtService.signAsync(payload2, { secret: JWT_SECRET })
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      throw new BadRequestException('Algo salió mal', {
+        cause: new Error(),
+        description: 'Id no válido',
+      });
+    }
+    const user = await this.userModel.findByIdAndUpdate(userId, newUserData, {
+      new: true,
+    });
+    const payload2 = {
+      id: user._id,
+      email: user.email,
+      name: user.name,
+      rol: user.rol,
+      dob: user.dateofbirth,
+      profession: user.profession,
+      rut: user.rut,
+      cellphone: user.cellphone,
+    };
+    const token = await this.JwtService.signAsync(payload2, {
+      secret: JWT_SECRET,
+    });
     return token;
   }
 
@@ -101,59 +145,72 @@ class UserService {
     const users = await this.descriptionModel.find();
     return users;
   }
-  async create_description(userId: string, description: string ){
-  const user = await this.userModel.findById(userId);
-  if (!user) {
-    throw new NotFoundException('Usuario no encontrado');
+  async create_description(userId: string, description: string) {
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+    const descrip = new this.descriptionModel(description);
+    await descrip.save();
+    await this.userModel.findByIdAndUpdate(userId, {
+      $set: { descripcion: descrip._id },
+    });
+    return { descripId: descrip._id, userId: userId };
   }
-  const descrip= new this.descriptionModel(description);
-  await descrip.save();
-  await this.userModel.findByIdAndUpdate(userId, { $set: { descripcion: descrip._id } });
-    return { descripId: descrip._id, userId: userId}
-    
-
-  }
-  async update_description(userId: string,  newDesc: any) {
-    if (!mongoose.Types.ObjectId.isValid(userId)){
-      throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
-  }
+  async update_description(userId: string, newDesc: any) {
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      throw new BadRequestException('Algo salió mal', {
+        cause: new Error(),
+        description: 'Id no válido',
+      });
+    }
     const user = await this.userModel.findById(userId);
     if (!user) {
       throw new NotFoundException('Usuario no encontrado');
     }
     const descripcionId = user.descripcion;
 
-    const descripcion = await this.descriptionModel.findByIdAndUpdate(descripcionId,newDesc, { new: true });
+    const descripcion = await this.descriptionModel.findByIdAndUpdate(
+      descripcionId,
+      newDesc,
+      { new: true },
+    );
     return descripcion;
   }
-  async add_media(userId:string){
-    if (!mongoose.Types.ObjectId.isValid(userId)){
-      throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
-  }
-    const user =await this.userModel.findById(userId);
+  async add_media(userId: string) {
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      throw new BadRequestException('Algo salió mal', {
+        cause: new Error(),
+        description: 'Id no válido',
+      });
+    }
+    const user = await this.userModel.findById(userId);
     if (!user) {
       throw new NotFoundException('Usuario no encontrado');
     }
-    const media= new this.mediaModel()
-  await media.save()
-  await this.userModel.findByIdAndUpdate(userId, { $set: { media: media._id } })
-  return media._id;
+    const media = new this.mediaModel();
+    await media.save();
+    await this.userModel.findByIdAndUpdate(userId, {
+      $set: { media: media._id },
+    });
+    return media._id;
   }
-  async add_doc(userId:string){
-    if (!mongoose.Types.ObjectId.isValid(userId)){
-      throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
-  }
-    const user =await this.userModel.findById(userId);
+  async add_doc(userId: string) {
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      throw new BadRequestException('Algo salió mal', {
+        cause: new Error(),
+        description: 'Id no válido',
+      });
+    }
+    const user = await this.userModel.findById(userId);
     if (!user) {
       throw new NotFoundException('Usuario no encontrado');
     }
-    const doc= new this.docModel()
-  await doc.save()
-  await this.userModel.findByIdAndUpdate(userId, { $set: { doc: doc._id } })
-  return doc._id;
-
+    const doc = new this.docModel();
+    await doc.save();
+    await this.userModel.findByIdAndUpdate(userId, { $set: { doc: doc._id } });
+    return doc._id;
   }
 }
-
 
 export default UserService;
