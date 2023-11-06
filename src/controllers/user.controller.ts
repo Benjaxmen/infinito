@@ -1,9 +1,11 @@
 import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common';
 import UserService from '../services/user.service';
 import CurriculumService from '../services/curriculum.service';
+import { JwtService } from '@nestjs/jwt';
+import { JWT_SECRET } from '../auth/constants';
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService,private readonly curriculumService: CurriculumService) {}
+  constructor(private readonly userService: UserService,private readonly curriculumService: CurriculumService,private JwtService: JwtService) {}
 
 
   @Post()
@@ -23,7 +25,9 @@ export class UserController {
 
   @Put(':id')
   async update(@Param('id') userId, @Body() newUserData) {
-    return this.userService.update(userId, newUserData);
+    const payload =await this.userService.update(userId, newUserData);
+    const token= await this.JwtService.signAsync(payload, { secret: JWT_SECRET })
+    return token
   }
 
   @Delete(':id')

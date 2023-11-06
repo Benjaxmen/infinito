@@ -12,6 +12,7 @@ class UserService {
   private mediaModel = mongoose.model('Media',MediaSchema)
   private docModel = mongoose.model('Doc',DocSchema)
   
+  
   async create(userData) {
     const existingUser = await this.userModel.findOne({ email: userData.email });
     if (existingUser) {
@@ -54,7 +55,17 @@ class UserService {
     const user = await this.userModel.findOne(filter);
     return user;
   }
-  
+  async findOnebyId(userId){
+    if (!mongoose.Types.ObjectId.isValid(userId)){
+      throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
+  }
+    const user = await this.userModel.findById(userId);
+    if (!user){throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Usuario no encontrado' })
+
+    }
+    return user;
+
+  }
   async read(userId) {
     const user = await this.userModel.findOne({_id: userId});
     if(!user){
@@ -70,7 +81,9 @@ class UserService {
       throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
   }
     const user = await this.userModel.findByIdAndUpdate(userId, newUserData, { new: true });
-    return user;
+    const payload2={id: user._id, email: user.email, name: user.name,rol:user.rol,dob:user.dateofbirth,profession:user.profession,rut:user.rut,cellphone:user.cellphone}
+    
+    return payload2;
   }
 
   async delete(userId) {
