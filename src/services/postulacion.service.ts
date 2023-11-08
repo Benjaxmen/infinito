@@ -106,7 +106,7 @@ class PostulacionService{
         if(postulacion_previa){
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Ya postulaste a esta oferta' })
         }
-        const postulacion = await new this.postulanteModel({userId: postulante._id,oferta: oferta._id })
+        const postulacion = await new this.postulanteModel({userId: postulante._id,oferta: oferta._id , estado: "Pendiente"})
         return postulacion;
     }
     async delete_postulacion(postulacionId,payload){
@@ -141,6 +141,9 @@ class PostulacionService{
         return postulaciones;
     }
     async buscar_ofertas_postulaciones_usuario(userId) {
+        if (!mongoose.Types.ObjectId.isValid(userId)){
+            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
+        }
         const postulante = await this.userModel.findById(userId);
         if (!postulante) {
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Este usuario no existe' });
@@ -156,6 +159,18 @@ class PostulacionService{
         }
     
         return postulaciones;
+    }
+    async buscar_postulantes_a_ofertas(userId){
+        if (!mongoose.Types.ObjectId.isValid(userId)){
+            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
+        }
+        const reclutador = await this.userModel.findById(userId)
+        if (!reclutador){
+            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Usuario no encontrado' })
+        }
+        const offers= await this.postulanteModel.find({oferta: {$elemMatch: {reclutadorId: reclutador._id}}}).populate('oferta').populate('userId','name, email, cellphone').exec()
+        return offers;
+
     }
 }
 export default PostulacionService;
