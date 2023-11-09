@@ -26,6 +26,10 @@ export class PostulacionController {
   async postular(@Param('id') offerId, @Body() postulanteId){
     return this.postulacionService.postulacion(offerId,postulanteId)
   }
+  @Get('/postulaciones/:id')
+  async buscar_postulaciones_oferta(@Param('id') offerId){
+    return this.postulacionService.buscar_postulantes_a_oferta(offerId)
+  }
   @Delete('/postulacion/:id')
   async borrar_postulacion(@Param('id') postulacionId,@Body() payload){
     return this.postulacionService.delete_postulacion(postulacionId,payload)
@@ -34,9 +38,9 @@ export class PostulacionController {
   async buscar_postulaciones(@Param('id') userId){
     return this.postulacionService.buscar_postulaciones_usuario(userId)
   }
-  @Get('/postulacion/offer/:id/')
+  @Get('/user/:id/')
   async buscar_ofertas(@Param('id') userId){
-    return this.postulacionService.buscar_ofertas_postulaciones_usuario(userId)
+    return this.postulacionService.buscar_ofertas_usuario(userId)
   }
 
 
