@@ -92,7 +92,7 @@ export class DocController {
     if (!user.doc){
       throw new NotFoundException("document not found")
     }
-    await this.storageService.delete("doc/"+docId)
+    await this.storageService.delete("docs/"+docId)
     return await this.uploadDoc(file, userId)
     
 
@@ -114,6 +114,22 @@ export class DocController {
     res.setHeader("Content-Type", storageFile.contentType);
     res.setHeader("Cache-Control", "max-age=60d");
     res.end(storageFile.buffer);
+  }
+  @Delete("/user/:userId")
+  async deleteUserDoc(@Param("userId") userId: string){
+    if (!mongoose.Types.ObjectId.isValid(userId)){
+      throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
+  }
+    const user = await this.userService.findOnebyId(userId)
+    if (!user){
+      throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Usuario no válido' })
+    }
+    const docId=  user.doc
+    if (!user.doc){
+      throw new NotFoundException("document not found")
+    }
+    return await this.storageService.delete("docs/"+docId);
+
   }
 
   @Delete(":docId")

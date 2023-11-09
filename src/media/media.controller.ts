@@ -73,6 +73,22 @@ import {
     res.end(storageFile.buffer);
 
   }
+  @Delete("/user/:userId")
+  async deleteUserMedia(@Param("userId") userId: string){
+    if (!mongoose.Types.ObjectId.isValid(userId)){
+      throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
+  }
+    const user = await this.userService.findOnebyId(userId)
+    if (!user){
+      throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Usuario no válido' })
+    }
+    const mediaId=  user.media
+    if (!user.media){
+      throw new NotFoundException("document not found")
+    }
+    return await this.storageService.delete("media/"+mediaId);
+
+  }
   @Put("/user/:userId")
   @UseInterceptors(
     FileInterceptor("file", {
