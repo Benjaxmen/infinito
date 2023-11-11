@@ -73,7 +73,7 @@ class UserService {
 
 
     }
-    return {rut: user.rut,correo: user.email,nacimiento: user.dateofbirth, prof: user.profession,cel: user.cellphone,id: user._id, foto: user.media, desc:user.descripcion,pdf:user.doc};
+    return {nombre: user.name, rut: user.rut,correo: user.email,nacimiento: user.dateofbirth, prof: user.profession,cel: user.cellphone,id: user._id, foto: user.media, desc:user.descripcion,pdf:user.doc};
   }
 
   async update(userId, newUserData) {
