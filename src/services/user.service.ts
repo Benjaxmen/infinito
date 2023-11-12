@@ -26,6 +26,7 @@ class UserService {
       throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Ingresa datos válidos' })
     }
     userData.password =await this.hashPassword(userData.password)
+    userData.rol="Usuario"
 
     const user = new this.userModel(userData);
     await user.save();
