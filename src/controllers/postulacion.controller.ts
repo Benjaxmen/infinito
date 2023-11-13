@@ -10,6 +10,11 @@ export class PostulacionController {
   async findall_off(){
     return this.postulacionService.get_all_offers()
   }
+  @Get(':page/:size')
+  async get_offers_batch(@Param('page')page,@Param('size')size ){
+    return this.postulacionService.get_offer_page(page,size)
+
+  }
   @Post()
   async post_offer(@Body() payload){
   return this.postulacionService.create_offer(payload)
