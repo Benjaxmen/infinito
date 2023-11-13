@@ -65,6 +65,13 @@ class PostulacionService{
         const offers = await this.ofertaModel.find()
         return offers
     }
+    async get_offer_page(page:number,size:number){
+        const skip =(page-1)*size
+        const offers = await this.ofertaModel.find().skip(skip).limit(size).exec()
+        return offers
+
+
+    }
     async delete_offer(offerId,payload){
         if (!mongoose.Types.ObjectId.isValid(offerId)||!mongoose.Types.ObjectId.isValid(payload.userId)){
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })

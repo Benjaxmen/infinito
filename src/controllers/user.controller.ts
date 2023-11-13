@@ -17,6 +17,11 @@ export class UserController {
   async findAll() {
     return this.userService.findAll();
   }
+  @Get('/page/:page/:size')
+  async find_batch(@Param('page') page, @Param('size') size) {
+    return this.userService.find_page(page, size);
+  }
+
 
   @Get(':id')
   async read(@Param('id') userId) {

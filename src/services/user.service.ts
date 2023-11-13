@@ -52,6 +52,11 @@ class UserService {
     return users;
   }
 
+  async find_page(page: number, pagesize: number){
+    const skip =(page-1)*pagesize
+    const users = await this.userModel.find().skip(skip).limit(pagesize).exec()
+    return users
+  }
   async findOne(filter: Record<string, any>) {
     const user = await this.userModel.findOne(filter);
     return user;
