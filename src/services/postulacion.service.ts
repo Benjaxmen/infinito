@@ -25,8 +25,8 @@ class PostulacionService{
 
     }
     async update_offer(offerId,offer_data){
-        if (!mongoose.Types.ObjectId.isValid(offer_data.offerId)){
-            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Este usuario no existe' })
+        if (!mongoose.Types.ObjectId.isValid(offerId)){
+            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Esta oferta no existe' })
         }
         let offer: any;
         try { offer = await this.ofertaModel.findByIdAndUpdate(offerId, offer_data, {new:true});            
@@ -95,7 +95,10 @@ class PostulacionService{
     
     }
     async find_offer(filter: Record<string, any>){
-        return await this.ofertaModel.find(filter)
+        if (filter.tags && filter.tags.length > 0) {
+            filter.tags = { $all: filter.tags };
+        }
+        return await this.ofertaModel.find(filter).exec()
     }
     async postulacion(offerId,payload){
         if (!mongoose.Types.ObjectId.isValid(offerId)||!mongoose.Types.ObjectId.isValid(payload.userId)){

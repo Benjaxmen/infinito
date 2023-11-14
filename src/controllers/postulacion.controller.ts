@@ -15,6 +15,11 @@ export class PostulacionController {
     return this.postulacionService.get_offer_page(page,size)
 
   }
+  @Get(':filter')
+  async filter_offers(@Param('filter')filter: string){
+    const parsedFilter = JSON.parse(filter);
+    return this.postulacionService.find_offer(parsedFilter)
+  }
   @Post()
   async post_offer(@Body() payload){
   return this.postulacionService.create_offer(payload)
