@@ -12,7 +12,11 @@ const UserSchema = new mongoose.Schema({
   cellphone: { type: String, required: true },
   descripcion: {type:mongoose.Schema.Types.ObjectId, ref: 'Descripcion'},
   media:{type:mongoose.Schema.Types.ObjectId, ref: 'Media'},
-  doc: {type:mongoose.Schema.Types.ObjectId, ref: 'Media'}
+  doc: {type:mongoose.Schema.Types.ObjectId, ref: 'Media'},
+  historial: {
+    type: [{ type: String }],
+    maxlength: 10, // Establece el límite de tamaño a 10 elementos
+  }
   //application: {type: mongoose.Schema.Types.ObjectId, ref: 'Application'},
 });
 

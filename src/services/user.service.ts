@@ -6,11 +6,13 @@ import * as bcrypt from 'bcrypt';
 import DescripcionSchema from '../schemas/descripcion.schema';
 import MediaSchema from 'src/schemas/media.schema';
 import DocSchema from 'src/schemas/doc.schema';
+import OfertaSchema from 'src/schemas/oferta.schema';
 class UserService {
   private userModel = mongoose.model('User', UserSchema);
   private descriptionModel = mongoose.model('Description',DescripcionSchema)
   private mediaModel = mongoose.model('Media',MediaSchema)
   private docModel = mongoose.model('Doc',DocSchema)
+  private ofertaModel = mongoose.model('Offer',OfertaSchema)
   
   
   async create(userData) {
@@ -27,6 +29,7 @@ class UserService {
     }
     userData.password =await this.hashPassword(userData.password)
     userData.rol="Usuario"
+    
 
     const user = new this.userModel(userData);
     await user.save();
@@ -110,6 +113,36 @@ class UserService {
   await this.userModel.findByIdAndUpdate(userId, { $set: { descripcion: descrip._id } });
     return { descripId: descrip._id, userId: userId}
     
+
+  }
+  async historial_usuario(userId){
+    if (!mongoose.Types.ObjectId.isValid(userId)){
+      throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
+  }
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+    return user.historial
+
+  }
+  async update_historial(userId,offerId){
+    if (!mongoose.Types.ObjectId.isValid(userId)){
+      throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'UserId no válido' })
+  }
+    const user = await this.userModel.findById(userId);
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+    if (!mongoose.Types.ObjectId.isValid(offerId)){
+      throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'OfferId no válido' })
+  }
+  const offer = await this.ofertaModel.findById(offerId);
+    if (!offer) {
+      throw new NotFoundException('oferta no encontrada');
+    }
+
+
 
   }
   async update_description(userId: string,  newDesc: any) {

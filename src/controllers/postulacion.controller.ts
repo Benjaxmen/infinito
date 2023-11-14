@@ -52,6 +52,10 @@ export class PostulacionController {
   async buscar_ofertas(@Param('id') userId){
     return this.postulacionService.buscar_ofertas_usuario(userId)
   }
+  @Get('/historial/:id')
+  async get_historial(@Param('id') id){
+    return this.userService.historial_usuario(id)
+  }
 
 
 
