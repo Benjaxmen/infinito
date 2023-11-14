@@ -126,26 +126,32 @@ class UserService {
     return user.historial
 
   }
-  async update_historial(userId,payload){
-    console.log(payload)
-    const offerId=payload.offerId
-    console.log(offerId)
+  /**
+   * This method is used to add an offer to a user's history.
+   * It takes a userId and a payload containing an offerId as parameters,
+   * validates these inputs, and then updates the user's history in the database.
+   * 
+   * @param userId - The ID of the user whose history is being updated.
+   * @param payload - The payload containing the offerId to be added to the user's history.
+   */
+  async update_historial(userId, payload){
+    const offerId = payload.offerId;
     if (!mongoose.Types.ObjectId.isValid(userId)){
       throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'UserId no válido' })
-  }
+    }
     const user = await this.userModel.findById(userId);
     if (!user) {
       throw new NotFoundException('Usuario no encontrado');
     }
     if (!mongoose.Types.ObjectId.isValid(offerId)){
       throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'OfferId no válido' })
-  }
-  const offer = await this.ofertaModel.findOne({_id:offerId});
-  console.log(offer)
+    }
+    const offer = await this.ofertaModel.findOne({_id:offerId});
     if (!offer) {
       throw new NotFoundException('oferta no encontrada');
     }
     try {
+      // This line adds the offerId to the user's history in the database.
       const user = await this.userModel.findByIdAndUpdate(
         userId,
         { $addToSet: { historial: offerId } },
@@ -157,6 +163,7 @@ class UserService {
       // Manejar errores aquí
       throw new Error(`Error al agregar al historial: ${error.message}`);
     }
+  }
 
 
 
