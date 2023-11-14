@@ -12,7 +12,7 @@ class UserService {
   private descriptionModel = mongoose.model('Description',DescripcionSchema)
   private mediaModel = mongoose.model('Media',MediaSchema)
   private docModel = mongoose.model('Doc',DocSchema)
-  private ofertaModel = mongoose.model('Offer',OfertaSchema)
+  private ofertaModel = mongoose.model('Oferta',OfertaSchema)
   
   
   async create(userData) {
@@ -126,7 +126,10 @@ class UserService {
     return user.historial
 
   }
-  async update_historial(userId,offerId){
+  async update_historial(userId,payload){
+    console.log(payload)
+    const offerId=payload.offerId
+    console.log(offerId)
     if (!mongoose.Types.ObjectId.isValid(userId)){
       throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'UserId no válido' })
   }
@@ -137,9 +140,22 @@ class UserService {
     if (!mongoose.Types.ObjectId.isValid(offerId)){
       throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'OfferId no válido' })
   }
-  const offer = await this.ofertaModel.findById(offerId);
+  const offer = await this.ofertaModel.findOne({_id:offerId});
+  console.log(offer)
     if (!offer) {
       throw new NotFoundException('oferta no encontrada');
+    }
+    try {
+      const user = await this.userModel.findByIdAndUpdate(
+        userId,
+        { $addToSet: { historial: offerId } },
+        { new: true }
+      );
+  
+      return user.historial;
+    } catch (error) {
+      // Manejar errores aquí
+      throw new Error(`Error al agregar al historial: ${error.message}`);
     }
 
 

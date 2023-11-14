@@ -22,7 +22,6 @@ export class UserController {
     return this.userService.find_page(page, size);
   }
 
-
   @Get(':id')
   async read(@Param('id') userId) {
     return this.userService.read(userId);

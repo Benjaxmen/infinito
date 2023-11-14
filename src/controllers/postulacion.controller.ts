@@ -10,9 +10,9 @@ export class PostulacionController {
   async findall_off(){
     return this.postulacionService.get_all_offers()
   }
-  @Get(':page/:size')
-  async get_offers_batch(@Param('page')page,@Param('size')size ){
-    return this.postulacionService.get_offer_page(page,size)
+  @Get('/pagina/:page')
+  async get_offers_batch(@Param('page')page){
+    return this.postulacionService.get_offer_page(page,20)
 
   }
   @Get(':filter')
@@ -56,6 +56,11 @@ export class PostulacionController {
   async get_historial(@Param('id') id){
     return this.userService.historial_usuario(id)
   }
+  @Put('/historial/:id')
+  async actualizar_historial(@Param('id') userId, @Body() payload){
+    return this.userService.update_historial(userId,payload)
+  }
+
 
 
 
