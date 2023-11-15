@@ -60,6 +60,9 @@ export class PostulacionController {
   async actualizar_historial(@Param('id') userId, @Body() payload){
     return this.userService.update_historial(userId,payload)
   }
+  @Delete('/historial/:id')
+  async borrar_historial(@Param('id') userId, @Body() payload){
+    return this.userService.delete_historial(userId,payload)}
 
 
 
