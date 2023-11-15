@@ -56,8 +56,21 @@ export class DocController {
     }
     const docId=  user.doc
     if (!user.doc){
-      throw new NotFoundException("Documento no encontrado")
+      let storageFile: StorageFile;
+    try {
+      storageFile = await this.storageService.get("docs/" + "123123123");
+    } catch (e) {
+      if (e.message.toString().includes("No such object")) {
+        throw new NotFoundException("document not found");
+      } else {
+        throw new ServiceUnavailableException("internal error");
+      }
     }
+    res.setHeader("Content-Type", storageFile.contentType);
+    res.setHeader("Cache-Control", "max-age=60d");
+
+    res.end(storageFile.buffer);
+        }
     let storageFile: StorageFile;
     try {
       storageFile = await this.storageService.get("docs/" + docId);
