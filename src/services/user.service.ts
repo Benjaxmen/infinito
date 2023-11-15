@@ -161,6 +161,44 @@ class UserService {
 
 
   }
+  async delete_historial(userId, payload) {
+    const offerId = payload.offerId;
+  
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      throw new BadRequestException('Algo salió mal', {
+        cause: new Error(),
+        description: 'UserId no válido',
+      });
+    }
+  
+    const user = await this.userModel.findById(userId);
+  
+    if (!user) {
+      throw new NotFoundException('Usuario no encontrado');
+    }
+  
+    if (!mongoose.Types.ObjectId.isValid(offerId)) {
+      throw new BadRequestException('Algo salió mal', {
+        cause: new Error(),
+        description: 'OfferId no válido',
+      });
+    }
+  
+    try {
+      // Utiliza $pull para eliminar la oferta del historial del usuario
+      const updatedUser = await this.userModel.findByIdAndUpdate(
+        userId,
+        { $pull: { historial: offerId } },
+        { new: true }
+      );
+  
+      return updatedUser.historial;
+    } catch (error) {
+      // Manejar errores aquí
+      throw new Error(`Error al eliminar del historial: ${error.message}`);
+    }
+  }
+  
   async update_description(userId: string,  newDesc: any) {
     if (!mongoose.Types.ObjectId.isValid(userId)){
       throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })

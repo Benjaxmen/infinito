@@ -14,8 +14,7 @@ const UserSchema = new mongoose.Schema({
   media:{type:mongoose.Schema.Types.ObjectId, ref: 'Media'},
   doc: {type:mongoose.Schema.Types.ObjectId, ref: 'Media'},
   historial: {
-    type: [{ type: String }],
-    maxlength: 10, // Establece el límite de tamaño a 10 elementos
+    type: [{ type: String }]
   }
   //application: {type: mongoose.Schema.Types.ObjectId, ref: 'Application'},
 });
