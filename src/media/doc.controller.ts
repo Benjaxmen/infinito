@@ -18,6 +18,7 @@ import {
   import { StorageFile } from "src/storage/storage-file";
   import { StorageService } from "src/storage/storage.service";
   import UserService from "src/services/user.service";
+import { NotFoundError } from "rxjs";
   
 @Controller("doc")
 export class DocController {
@@ -55,19 +56,7 @@ export class DocController {
     }
     const docId=  user.doc
     if (!user.doc){
-      let storageFile: StorageFile;
-    try {
-      storageFile = await this.storageService.get("docs/" + "123123123");
-    } catch (e) {
-      if (e.message.toString().includes("No such object")) {
-        throw new NotFoundException("document not found");
-      } else {
-        throw new ServiceUnavailableException("internal error");
-      }
-    }
-    res.setHeader("Content-Type", storageFile.contentType);
-    res.setHeader("Cache-Control", "max-age=60d");
-    res.end(storageFile.buffer);
+      throw new NotFoundException("Documento no encontrado")
     }
     let storageFile: StorageFile;
     try {
@@ -81,6 +70,7 @@ export class DocController {
     }
     res.setHeader("Content-Type", storageFile.contentType);
     res.setHeader("Cache-Control", "max-age=60d");
+
     res.end(storageFile.buffer);
 
   }
