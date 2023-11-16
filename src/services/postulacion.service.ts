@@ -36,6 +36,7 @@ class PostulacionService{
      * @returns The ID of the created offer.
      */
         // Validate recruiter ID
+        async create_offer(offer_data) {
         if (!mongoose.Types.ObjectId.isValid(offer_data.reclutadorId)){
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
         }
@@ -80,6 +81,7 @@ class PostulacionService{
             
         }
         return offer;
+        }
     }
 
     /**
