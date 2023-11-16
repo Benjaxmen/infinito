@@ -166,6 +166,12 @@ class PostulacionService{
             this.ofertaModel.findByIdAndDelete(offerId)
             return ("Borrado exitoso")
         }
+        }
+        // Check if user has the necessary permissions
+            // Delete the offer
+            this.ofertaModel.findByIdAndDelete(offerId)
+            return ("Borrado exitoso")
+        }
         else{
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'No se pudo borrar la oferta' })
         }        
