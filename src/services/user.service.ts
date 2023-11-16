@@ -119,11 +119,11 @@ class UserService {
     if (!mongoose.Types.ObjectId.isValid(userId)){
       throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
   }
-    const user = await this.userModel.findById(userId);
+    const user = (await this.userModel.find({_id:userId}).populate('historial'));
     if (!user) {
       throw new NotFoundException('Usuario no encontrado');
     }
-    return user.historial
+    return user[0].historial
 
   }
   async update_historial(userId,payload){

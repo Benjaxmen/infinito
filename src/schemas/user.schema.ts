@@ -14,7 +14,7 @@ const UserSchema = new mongoose.Schema({
   media:{type:mongoose.Schema.Types.ObjectId, ref: 'Media'},
   doc: {type:mongoose.Schema.Types.ObjectId, ref: 'Media'},
   historial: {
-    type: [{ type: String }]
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Oferta' }]
   }
   //application: {type: mongoose.Schema.Types.ObjectId, ref: 'Application'},
 });
