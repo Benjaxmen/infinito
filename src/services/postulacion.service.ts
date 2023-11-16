@@ -81,7 +81,6 @@ class PostulacionService{
             
         }
         return offer;
-        }
     }
 
     /**
@@ -89,6 +88,7 @@ class PostulacionService{
      * @param offerId - The ID of the offer.
      * @returns The offer object if it exists, otherwise throws an exception.
      */
+    async get_offer(offerId){
         // Validate offerId
         if (!mongoose.Types.ObjectId.isValid(offerId)){
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
@@ -97,8 +97,8 @@ class PostulacionService{
         // Check if offer exists
         if (!offer) {
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Esta oferta no existe' })
-          }
-        return offer
+        }
+        return offer;
     }
     
     /**
@@ -115,7 +115,7 @@ class PostulacionService{
         if (!offer) {
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Este usuario no ha creado ofertas' })
           }
-        return offer
+        return offer;
     }
     
     /**
@@ -124,7 +124,7 @@ class PostulacionService{
      */
     async get_all_offers(){
         const offers = await this.ofertaModel.find()
-        return offers
+        return offers;
     }
     
     /**
@@ -133,27 +133,25 @@ class PostulacionService{
      * @param size - The number of offers per page.
      * @returns An array of offer objects for the specified page.
      */
+    async get_offer_page(page:number,size:number){
         // Calculate the number of offers to skip
         const skip =(page-1)*size
         const offers = await this.ofertaModel.find().skip(skip).limit(size).exec()
-        return offers
+        return offers;
     }
-
-    /**
      * Deletes an offer.
      * @param offerId - The ID of the offer to delete.
      * @param payload - The details of the deletion.
      * @returns A confirmation of the deletion if successful, otherwise throws an exception.
      */
-    async delete_offer(offerId,payload){
-        // Validate offerId and userId
-        if (!mongoose.Types.ObjectId.isValid(offerId)||!mongoose.Types.ObjectId.isValid(payload.userId)){
-            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
+        // Check if user has the necessary permissions
+        if (oferta.reclutadorId==user._id||user.rol=="Admin"){
+            // Delete the offer
+            this.ofertaModel.findByIdAndDelete(offerId)
+            return ("Borrado exitoso");
         }
-        const oferta= await this.ofertaModel.findById(offerId)
-        // Check if offer exists
-        if (!oferta){
-            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Oferta no encontrada' })
+        else{
+            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Usuario no encontrado' })        
         }
         const user = await this.userModel.findOne({_id: payload.userId})
     
@@ -168,22 +166,16 @@ class PostulacionService{
             return ("Borrado exitoso")
         }
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Usuario no encontrado' })        
-        }
         // Check if user has the necessary permissions
+        if (oferta.reclutadorId==user._id||user.rol=="Admin"){
             // Delete the offer
             this.ofertaModel.findByIdAndDelete(offerId)
-            return ("Borrado exitoso")
-        }
-        }
-        // Check if user has the necessary permissions
-            // Delete the offer
-            this.ofertaModel.findByIdAndDelete(offerId)
-            return ("Borrado exitoso")
+            return ("Borrado exitoso");
         }
         else{
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'No se pudo borrar la oferta' })
         }        
-    /**
+    }
      * Finds offers based on the provided filter.
      * @param filter - The filter criteria.
      * @returns An array of offer objects that match the filter criteria.
@@ -195,6 +187,18 @@ class PostulacionService{
         }
         return await this.ofertaModel.find(filter).exec()
     }
+    /**
+     * Finds offers based on the provided filter.
+     * @param filter - The filter criteria.
+     * @returns An array of offer objects that match the filter criteria.
+     */
+    async find_offer(filter: Record<string, any>){
+        // Check if filter includes tags
+        if (filter.tags && filter.tags.length > 0) {
+            filter.tags = { $all: filter.tags };
+        }
+        return await this.ofertaModel.find(filter).exec();
+    }
     
     /**
      * Applies a user to an offer.
@@ -202,16 +206,15 @@ class PostulacionService{
      * @param payload - The details of the application.
      * @returns The created application object if successful, otherwise throws an exception.
      */
-    async postulacion(offerId,payload){
-        // Validate offerId and postulanteId
-        if (!mongoose.Types.ObjectId.isValid(offerId)||!mongoose.Types.ObjectId.isValid(payload.postulanteId)){
-            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
+        // Check if user has already applied to the offer
+        if(postulacion_previa){
+            return postulacion_previa;
         }
-        const postulante = await this.userModel.findById(payload.postulanteId)
-        // Check if user exists
-        if (!postulante) {
-            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Este usuario no existe' })
-          }
+        // Create new application
+        const postulacion = await new this.postulanteModel({userId: postulante._id,oferta: oferta._id , estado: "Pendiente"})
+        await postulacion.save()
+        return postulacion;
+    }
         const oferta = await this.ofertaModel.findById(offerId)
         // Check if offer exists
         if (!oferta) {
@@ -225,17 +228,40 @@ class PostulacionService{
         const postulacion = await new this.postulanteModel({userId: postulante._id,oferta: oferta._id , estado: "Pendiente"})
         await postulacion.save()
         return postulacion;
+        return postulaciones;
     }
-    async delete_postulacion(postulacionId,payload){
-        if (!mongoose.Types.ObjectId.isValid(payload.userId)){
+    async buscar_ofertas_usuario(userId) {
+        if (!mongoose.Types.ObjectId.isValid(userId)){
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
         }
-        const user= await this.userModel.findById(payload.userId)
-        if (!user) {
-            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Este usuario no existe' })
-          }
-        const postulacion= await this.postulanteModel.findById(postulacionId)
-        if (!postulacion) {
+        const reclutador = await this.userModel.findById(userId);
+        if (!reclutador) {
+            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Este usuario no existe' });
+        }
+    
+        const ofertas = await this.ofertaModel
+            .find({ userId: reclutador._id })
+    
+        if (!ofertas || ofertas.length === 0) {
+            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Este usuario no posee postulaciones' });
+        }
+    
+        return ofertas;
+    }
+    async buscar_postulantes_a_oferta(offerId){
+        if (!mongoose.Types.ObjectId.isValid(offerId)){
+            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
+        }
+        const oferta= await this.ofertaModel.findById(offerId);
+        if(!oferta){
+            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Esta oferta no existe' })
+        }
+        const usuarios = await this.postulanteModel.find({oferta: oferta._id}).populate('usuario',"userId name")
+        return usuarios;
+    }
+    
+    }
+    export default PostulacionService;
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Esta postulación no existe' })
           }
         if (postulacion.userId==user._id||user.rol=="Admin"){
