@@ -144,16 +144,29 @@ class PostulacionService{
      * @param payload - The details of the deletion.
      * @returns A confirmation of the deletion if successful, otherwise throws an exception.
      */
+        // Validate offerId and userId
+        if (!mongoose.Types.ObjectId.isValid(offerId)||!mongoose.Types.ObjectId.isValid(payload.userId)){
+            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
+        }
+        const oferta= await this.ofertaModel.findById(offerId)
+        // Check if offer exists
+        if (!oferta){
+            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Oferta no encontrada' })
+        }
+        const user = await this.userModel.findOne({_id: payload.userId})
+        // Check if user exists
+        if (!user){
+            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Usuario no encontrado' })        
+        }
         // Check if user has the necessary permissions
         if (oferta.reclutadorId==user._id||user.rol=="Admin"){
             // Delete the offer
             this.ofertaModel.findByIdAndDelete(offerId)
-            return ("Borrado exitoso");
+            return ("Borrado exitoso")
         }
         else{
-            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Usuario no encontrado' })        
-        }
-        const user = await this.userModel.findOne({_id: payload.userId})
+            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'No se pudo borrar la oferta' })
+        }        
     
         // Check if user exists
         if (!user){
@@ -176,18 +189,6 @@ class PostulacionService{
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'No se pudo borrar la oferta' })
         }        
     }
-     * Finds offers based on the provided filter.
-     * @param filter - The filter criteria.
-     * @returns An array of offer objects that match the filter criteria.
-     */
-    async find_offer(filter: Record<string, any>){
-        // Check if filter includes tags
-        if (filter.tags && filter.tags.length > 0) {
-            filter.tags = { $all: filter.tags };
-        }
-        return await this.ofertaModel.find(filter).exec()
-    }
-    /**
      * Finds offers based on the provided filter.
      * @param filter - The filter criteria.
      * @returns An array of offer objects that match the filter criteria.
