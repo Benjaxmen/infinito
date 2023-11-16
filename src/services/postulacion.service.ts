@@ -162,6 +162,14 @@ class PostulacionService{
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Usuario no encontrado' })        
         }
         // Check if user has the necessary permissions
+        if (oferta.reclutadorId==user._id||user.rol=="Admin"){
+            // Delete the offer
+            this.ofertaModel.findByIdAndDelete(offerId)
+            return ("Borrado exitoso")
+        }
+            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Usuario no encontrado' })        
+        }
+        // Check if user has the necessary permissions
             // Delete the offer
             this.ofertaModel.findByIdAndDelete(offerId)
             return ("Borrado exitoso")
