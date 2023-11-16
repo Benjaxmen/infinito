@@ -7,6 +7,16 @@ class PostulacionService{
     private userModel = mongoose.model("User",UserSchema);
     private ofertaModel = mongoose.model("Oferta",OfertaSchema);
     private postulanteModel = mongoose.model("Postulante",PostulanteSchema);
+    async find(offerId){
+        if (!mongoose.Types.ObjectId.isValid(offerId)){
+            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
+        }
+        const oferta=this.ofertaModel.findById(offerId)
+        if(!oferta){
+            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Esta oferta no existe' })
+        }
+        return oferta    
+    }
     async create_offer(offer_data ){
         if (!mongoose.Types.ObjectId.isValid(offer_data.reclutadorId)){
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })

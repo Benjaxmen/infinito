@@ -5,6 +5,11 @@ import PostulacionService from '../services/postulacion.service';
 @Controller('ofertas')
 export class PostulacionController {
   constructor(private readonly userService: UserService,private readonly curriculumService: CurriculumService, private readonly postulacionService: PostulacionService) {}
+  
+  @Get("/oferta/:id")
+  async find_offer_id(@Param('id')id){
+    return this.postulacionService.find(id)
+  }
 
   @Get()
   async findall_off(){
