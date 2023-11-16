@@ -144,6 +144,7 @@ class PostulacionService{
      * @param payload - The details of the deletion.
      * @returns A confirmation of the deletion if successful, otherwise throws an exception.
      */
+     async delete_offer(offerId,payload){
         // Validate offerId and userId
         if (!mongoose.Types.ObjectId.isValid(offerId)||!mongoose.Types.ObjectId.isValid(payload.userId)){
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
