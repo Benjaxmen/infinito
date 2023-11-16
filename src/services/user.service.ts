@@ -127,9 +127,7 @@ class UserService {
 
   }
   async update_historial(userId,payload){
-    console.log(payload)
     const offerId=payload.offerId
-    console.log(offerId)
     if (!mongoose.Types.ObjectId.isValid(userId)){
       throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'UserId no válido' })
   }
@@ -141,7 +139,6 @@ class UserService {
       throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'OfferId no válido' })
   }
   const offer = await this.ofertaModel.findOne({_id:offerId});
-  console.log(offer)
     if (!offer) {
       throw new NotFoundException('oferta no encontrada');
     }

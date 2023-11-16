@@ -58,6 +58,8 @@ export class PostulacionController {
   }
   @Put('/historial/:id')
   async actualizar_historial(@Param('id') userId, @Body() payload){
+    const payload2={postulanteId:userId}
+    this.postulacionService.postulacion(payload.offerId,payload2)
     return this.userService.update_historial(userId,payload)
   }
   @Delete('/historial/:id')

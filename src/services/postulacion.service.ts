@@ -101,7 +101,7 @@ class PostulacionService{
         return await this.ofertaModel.find(filter).exec()
     }
     async postulacion(offerId,payload){
-        if (!mongoose.Types.ObjectId.isValid(offerId)||!mongoose.Types.ObjectId.isValid(payload.userId)){
+        if (!mongoose.Types.ObjectId.isValid(offerId)||!mongoose.Types.ObjectId.isValid(payload.postulanteId)){
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
         }
         const postulante = await this.userModel.findById(payload.postulanteId)
@@ -111,12 +111,13 @@ class PostulacionService{
         const oferta = await this.ofertaModel.findById(offerId)
         if (!oferta) {
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Esta oferta no existe' })
-          }
-        const postulacion_previa = await this.postulanteModel.find({userId:postulante._id,oferta:oferta._id})
+        }
+        const postulacion_previa = await this.postulanteModel.findOne({userId:postulante._id,oferta:oferta._id})
         if(postulacion_previa){
-            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Ya postulaste a esta oferta' })
+            return postulacion_previa
         }
         const postulacion = await new this.postulanteModel({userId: postulante._id,oferta: oferta._id , estado: "Pendiente"})
+        await postulacion.save()
         return postulacion;
     }
     async delete_postulacion(postulacionId,payload){
