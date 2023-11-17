@@ -36,6 +36,10 @@ export class DocController {
     @UploadedFile() file: Express.Multer.File,
     @Body("userId") userId: string
   ) {
+    const user = await this.userService.findOnebyId(userId)
+    if(user.doc){
+      await this.storageService.delete("docs/"+user.doc)
+    }
     const docId = await this.userService.add_doc(userId);
     await this.storageService.save(
       "docs/" + docId,
