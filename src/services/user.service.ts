@@ -91,7 +91,6 @@ class UserService {
   }
     const user = await this.userModel.findByIdAndUpdate(userId, newUserData, { new: true });
     const payload2={id: user._id, email: user.email, name: user.name,rol:user.rol,dob:user.dateofbirth,profession:user.profession,rut:user.rut,cellphone:user.cellphone}
-    
     return payload2;
   }
 

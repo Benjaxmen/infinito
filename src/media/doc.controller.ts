@@ -28,7 +28,7 @@ export class DocController {
   @UseInterceptors(
     FileInterceptor("file", {
       limits: {
-        files: 1,
+        files: 1
       },
     })
   )
@@ -87,7 +87,7 @@ export class DocController {
     res.end(storageFile.buffer);
 
   }
-  @Put("/user/:userId")
+  @Post("/user/:userId")
   @UseInterceptors(
     FileInterceptor("file", {
       limits: {
@@ -99,19 +99,22 @@ export class DocController {
     if (!mongoose.Types.ObjectId.isValid(userId)){
       throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
   }
+
     const user = await this.userService.findOnebyId(userId)
     if (!user){
       throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Usuario no válido' })
     }
     const docId=  user.doc
-    if (!user.doc){
-      throw new NotFoundException("document not found")
+
+    if (user.doc){
+      await this.storageService.delete("docs/"+docId)
     }
-    await this.storageService.delete("docs/"+docId)
+    
     return await this.uploadDoc(file, userId)
     
 
   }
+
 
 
   @Get(":docId")
@@ -143,6 +146,7 @@ export class DocController {
     if (!user.doc){
       throw new NotFoundException("document not found")
     }
+    await this.userService.update(user._id,{doc: null})
     return await this.storageService.delete("docs/"+docId);
 
   }
