@@ -20,7 +20,7 @@ export class PostulacionController {
     return this.postulacionService.get_offer_page(page,20)
 
   }
-  @Get(':filter')
+  @Get('/tags/:filter')
   async filter_offers(@Param('filter')filter: string){
     const parsedFilter = JSON.parse(filter);
     return this.postulacionService.find_offer(parsedFilter)

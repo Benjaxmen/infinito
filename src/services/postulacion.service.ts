@@ -171,7 +171,7 @@ class PostulacionService{
         }
     
         const ofertas = await this.ofertaModel
-            .find({ userId: reclutador._id })
+            .find({ reclutadorId: reclutador._id })
     
         if (!ofertas || ofertas.length === 0) {
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Este usuario no posee postulaciones' });
