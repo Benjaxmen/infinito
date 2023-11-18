@@ -53,6 +53,10 @@ export class PostulacionController {
   async buscar_postulaciones(@Param('id') userId){
     return this.postulacionService.buscar_postulaciones_usuario(userId)
   }
+  @Get('/postulacion/:user/:id')
+  async buscar_postulacion(@Param('user') userId,@Param('id') offerId){
+    return this.postulacionService.get_postulacion(userId,offerId)
+  }
   @Get('/user/:id/')
   async buscar_ofertas(@Param('id') userId){
     return this.postulacionService.buscar_ofertas_usuario(userId)

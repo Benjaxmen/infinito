@@ -3,6 +3,7 @@ import PostulanteSchema from '../schemas/postulante.schema';
 import UserSchema from '../schemas/user.schema';
 import OfertaSchema from '../schemas/oferta.schema';
 import { BadRequestException, NotFoundException, ServiceUnavailableException } from '@nestjs/common';
+import path from 'node:path';
 class PostulacionService{
     private userModel = mongoose.model("User",UserSchema);
     private ofertaModel = mongoose.model("Oferta",OfertaSchema);
@@ -155,11 +156,12 @@ class PostulacionService{
         if (!postulante) {
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Este usuario no existe' })
           }
-        const postulaciones = await this.postulanteModel.find({userId:postulante._id}).populate('oferta')
-        if (!postulaciones){throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Este usuario no posee postulaciones' })
+        const postulaciones = await this.postulanteModel.find({userId:postulante._id}).populate({path:'oferta'}).exec()
+        const ofertas = postulaciones.map(postulacion => postulacion.oferta);
+        if (!ofertas){throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Este usuario no posee postulaciones' })
         
         }
-        return postulaciones;
+        return ofertas;
     }
     async buscar_ofertas_usuario(userId) {
         if (!mongoose.Types.ObjectId.isValid(userId)){
@@ -189,6 +191,17 @@ class PostulacionService{
         }
         const usuarios = await this.postulanteModel.find({oferta: oferta._id}).populate('usuario',"userId name")
         return usuarios
+    }
+    async get_postulacion(userId,offerId){
+        if (!mongoose.Types.ObjectId.isValid(offerId)){
+            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
+        }
+        if (!mongoose.Types.ObjectId.isValid(userId)){
+            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
+        }
+        const postulacion= await this.postulanteModel.findOne({userId:userId,oferta:offerId})
+        return postulacion
+        
     }
 
 }
