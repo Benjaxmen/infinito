@@ -189,8 +189,9 @@ class PostulacionService{
         if(!oferta){
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Esta oferta no existe' })
         }
-        const usuarios = await this.postulanteModel.find({oferta: oferta._id}).populate('usuario',"userId name")
-        return usuarios
+        const usuarios = await this.postulanteModel.find({oferta: oferta._id}).populate('userId',"name").exec()
+        const postulantes = usuarios.map(usuarios => usuarios.userId);
+        return postulantes
     }
     async get_postulacion(userId,offerId){
         if (!mongoose.Types.ObjectId.isValid(offerId)){
