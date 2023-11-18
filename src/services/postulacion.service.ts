@@ -131,22 +131,14 @@ class PostulacionService{
         await postulacion.save()
         return postulacion;
     }
-    async delete_postulacion(postulacionId,payload){
-        if (!mongoose.Types.ObjectId.isValid(payload.userId)){
+    async delete_postulacion(userId,offerId){
+        if (!mongoose.Types.ObjectId.isValid(offerId)){
             throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
         }
-        const user= await this.userModel.findById(payload.userId)
-        if (!user) {
-            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Este usuario no existe' })
-          }
-        const postulacion= await this.postulanteModel.findById(postulacionId)
-        if (!postulacion) {
-            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Esta postulación no existe' })
-          }
-        if (postulacion.userId==user._id||user.rol=="Admin"){
-            return await this.postulanteModel.findByIdAndDelete(postulacionId)
-
+        if (!mongoose.Types.ObjectId.isValid(userId)){
+            throw new BadRequestException('Algo salió mal', { cause: new Error(), description: 'Id no válido' })
         }
+        return await this.postulanteModel.findOneAndDelete({userId:userId,oferta:offerId})
     }
     async buscar_postulaciones_usuario(userId){
         if (!mongoose.Types.ObjectId.isValid(userId)){

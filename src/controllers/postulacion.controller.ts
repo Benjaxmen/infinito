@@ -57,6 +57,10 @@ export class PostulacionController {
   async buscar_postulacion(@Param('user') userId,@Param('id') offerId){
     return this.postulacionService.get_postulacion(userId,offerId)
   }
+  @Delete('/postulacion/:user/:id')
+  async delete_postulacion(@Param('user') userId,@Param('id') offerId){
+    return this.postulacionService.delete_postulacion(userId,offerId)
+  }
   @Get('/user/:id/')
   async buscar_ofertas(@Param('id') userId){
     return this.postulacionService.buscar_ofertas_usuario(userId)
