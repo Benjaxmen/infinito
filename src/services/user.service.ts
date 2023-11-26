@@ -4,9 +4,9 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { isEmail } from 'validator';
 import * as bcrypt from 'bcrypt';
 import DescripcionSchema from '../schemas/descripcion.schema';
-import MediaSchema from 'src/schemas/media.schema';
-import DocSchema from 'src/schemas/doc.schema';
-import OfertaSchema from 'src/schemas/oferta.schema';
+import MediaSchema from '../schemas/media.schema';
+import DocSchema from '../schemas/doc.schema';
+import OfertaSchema from '../schemas/oferta.schema';
 class UserService {
   private userModel = mongoose.model('User', UserSchema);
   private descriptionModel = mongoose.model('Description',DescripcionSchema)

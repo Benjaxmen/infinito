@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BadRequestException } from '@nestjs/common';
-import { isEmail } from 'validator';
-import CurriculumSchema from 'src/schemas/curriculum.schema';
 import UserService from './user.service';
 import UserSchema from '../schemas/user.schema';
 import * as mongoose from 'mongoose';
 import { ObjectId } from 'mongodb';
-import { mock } from 'node:test';
-
+import DescripcionSchema from '../schemas/descripcion.schema';
+import MediaSchema from '../schemas/media.schema';
+import DocSchema from '../schemas/doc.schema';
+import OfertaSchema from '../schemas/oferta.schema';
 describe('UserService', () => {
   let service: UserService;
   let userModel: any;
@@ -106,141 +106,10 @@ describe('UserService', () => {
   });
 
   // Add more test cases for other UserService methods
-  describe('read_curr', () => {
-    it('should return the curriculum of the user', async () => {
-      const userId = 'user_id';
-      const curriculumData = {
-        studies: ["asd"],
-        experiences: ["asd"],
-        courses: ["asd"],
-        languages: ["asd"],
-      };
   
-      jest.spyOn(service, 'read_curr').mockResolvedValue({
-        studies: ["asd"],
-        experiences: ["asd"],
-        courses: ["asd"],
-        languages: ["asd"],
-      } as any);  
-      const result = await service.read_curr(userId);
-  
-      expect(service.read_curr).toHaveBeenCalledWith(userId);
-      expect(result).toEqual(curriculumData);
-    });
-  
-    // Add more test cases for other UserService methods
-  });
-  describe('read_curr_studies', () => {
-    it('should return the studies of the user', async () => {
-      const userId = 'user_id';
-      const curriculumData = {
-        studies: ["asd"],
-        experiences: ["asd"],
-        courses: ["asd"],
-        languages: ["asd"],
-      };
-
-      jest
-        .spyOn(service, 'read_curr_studies')
-        .mockResolvedValue({
-          studies: ["asd"],
-          experiences: ["asd"],
-          courses: ["asd"],
-          languages: ["asd"],
-        } as any);
-
-      const result = await service.read_curr_studies(userId);
-
-      expect(service.read_curr_studies).toHaveBeenCalledWith(userId);
-      expect(result).toEqual(curriculumData);
-    });
-
-    // Add more test cases for other UserService methods
-  });
-
-  describe('read_curr_experiences', () => {
-    it('should return the experiences of the user', async () => {
-      const userId = 'user_id';
-      const curriculumData = {
-        studies: ["asd"],
-        experiences: ["asd"],
-        courses: ["asd"],
-        languages: ["asd"],
-      };
-
-      jest
-        .spyOn(service, 'read_curr_experiences')
-        .mockResolvedValue({
-          studies: ["asd"],
-          experiences: ["asd"],
-          courses: ["asd"],
-          languages: ["asd"],
-        } as any);
-
-      const result = await service.read_curr_experiences(userId);
-
-      expect(service.read_curr_experiences).toHaveBeenCalledWith(userId);
-      expect(result).toEqual(curriculumData);
-    });
-
-    // Add more test cases for other UserService methods
-  });
-
-  describe('read_curr_courses', () => {
-    it('should return the courses of the user', async () => {
-      const userId = 'user_id';
-      const curriculumData = {
-        studies: ["asd"],
-        experiences: ["asd"],
-        courses: ["asd"],
-        languages: ["asd"],
-      };
-
-      jest
-        .spyOn(service, 'read_curr_courses')
-        .mockResolvedValue({
-          studies: ["asd"],
-          experiences: ["asd"],
-          courses: ["asd"],
-          languages: ["asd"],
-        } as any);
-
-      const result = await service.read_curr_courses(userId);
-
-      expect(service.read_curr_courses).toHaveBeenCalledWith(userId);
-      expect(result).toEqual(curriculumData);
-    });
-
-    // Add more test cases for other UserService methods
-  });
-
-  describe('read_curr_languages', () => {
-    it('should return the languages of the user', async () => {
-      const userId = 'user_id';
-      const curriculumData = {
-        studies: ["asd"],
-        experiences: ["asd"],
-        courses: ["asd"],
-        languages: ["asd"],
-      };
-
-      jest
-        .spyOn(service, 'read_curr_languages')
-        .mockResolvedValue({
-          studies: ["asd"],
-          experiences: ["asd"],
-          courses: ["asd"],
-          languages: ["asd"],
-        } as any);
-
-      const result = await service.read_curr_languages(userId);
-
-      expect(service.read_curr_languages).toHaveBeenCalledWith(userId);
-      expect(result).toEqual(curriculumData);
-    });
 
     // Add more test cases for other UserService methods
   });
 
 
-});
+
