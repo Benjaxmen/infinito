@@ -25,75 +25,79 @@ describe('UserService', () => {
 
   // Test suite for 'create' method
   describe('create', () => {
-  it('should create a new user if email is valid and not repeated', async () => {
-    // Define a user data object for testing
-    const userData = {
-      email: 'test2@example.com',
-      name: "Benjamín Suárez Chavarría",
-      password: "123123123",
-      dateofbirth: "1997-07-22",
-      profession: "ingeniero",
-      rut: "154326750",
-      cellphone: "3445564465"
-    };
-
-    // Mock the 'findOne' and 'save' methods of userModel
-    jest.spyOn(userModel, 'findOne').mockResolvedValue(null);
-    jest.spyOn(userModel.prototype, 'save').mockResolvedValue(userData);
-
-    // Call the 'create' method with the test user data
-    const result = await service.create(userData);
-
-    // Assert that 'findOne' was called with the correct email
-    expect(userModel.findOne).toHaveBeenCalledWith({ email: userData.email });
-    // Assert that 'save' was called
-    expect(userModel.prototype.save).toHaveBeenCalled();
-    // Assert that the result is a valid ObjectId
-    expect(ObjectId.isValid(result)).toBeTruthy();
-  });
-  it('should throw BadRequestException if email is already associated with an account', async () => {
-    // Define a user data object for testing
-    const userData = {
-      email: 'test2@example.com',
-      name: "Benjamín Suárez Chavarría",
-      password: "123123123",
-      dateofbirth: "1997-07-22",
-      profession: "ingeniero",
-      rut: "154326750",
-      cellphone: "3445564465"
-    };
-
-    // Mock the 'findOne' method of userModel to return the test user data
-    jest.spyOn(userModel, 'findOne').mockResolvedValue(userData);
-
-    // Assert that calling 'create' with the test user data throws a BadRequestException
-    await expect(service.create(userData)).rejects.toThrow(BadRequestException);
-  });
-
-  // Test case: Exception thrown when email is not valid
-  it('should throw BadRequestException if email is not valid', async () => {
+    it('should create a new user if email is valid and not repeated', async () => {
+      // Define a user data object for testing
       const userData = {
-        email: 'invalidemail',
-        name: "Benjamín Suárez Chavarría",
-        password: "123123123",
-        dateofbirth: "1997-07-22",
-        profession: "ingeniero",
-        rut: "154326750",
-        cellphone: "3445564465"
+        email: 'test2@example.com',
+        name: 'Benjamín Suárez Chavarría',
+        password: '123123123',
+        dateofbirth: '1997-07-22',
+        profession: 'ingeniero',
+        rut: '154326750',
+        cellphone: '3445564465',
       };
 
-      await expect(service.create(userData)).rejects.toThrow(BadRequestException);
+      // Mock the 'findOne' and 'save' methods of userModel
+      jest.spyOn(userModel, 'findOne').mockResolvedValue(null);
+      jest.spyOn(userModel.prototype, 'save').mockResolvedValue(userData);
+
+      // Call the 'create' method with the test user data
+      const result = await service.create(userData);
+
+      // Assert that 'findOne' was called with the correct email
+      expect(userModel.findOne).toHaveBeenCalledWith({ email: userData.email });
+      // Assert that 'save' was called
+      expect(userModel.prototype.save).toHaveBeenCalled();
+      // Assert that the result is a valid ObjectId
+      expect(ObjectId.isValid(result)).toBeTruthy();
+    });
+    it('should throw BadRequestException if email is already associated with an account', async () => {
+      // Define a user data object for testing
+      const userData = {
+        email: 'test2@example.com',
+        name: 'Benjamín Suárez Chavarría',
+        password: '123123123',
+        dateofbirth: '1997-07-22',
+        profession: 'ingeniero',
+        rut: '154326750',
+        cellphone: '3445564465',
+      };
+
+      // Mock the 'findOne' method of userModel to return the test user data
+      jest.spyOn(userModel, 'findOne').mockResolvedValue(userData);
+
+      // Assert that calling 'create' with the test user data throws a BadRequestException
+      await expect(service.create(userData)).rejects.toThrow(
+        BadRequestException,
+      );
+    });
+
+    // Test case: Exception thrown when email is not valid
+    it('should throw BadRequestException if email is not valid', async () => {
+      const userData = {
+        email: 'invalidemail',
+        name: 'Benjamín Suárez Chavarría',
+        password: '123123123',
+        dateofbirth: '1997-07-22',
+        profession: 'ingeniero',
+        rut: '154326750',
+        cellphone: '3445564465',
+      };
+
+      await expect(service.create(userData)).rejects.toThrow(
+        BadRequestException,
+      );
     });
   });
   it('should throw BadRequestException if email is already associated with an account', async () => {
     const userData = {
       email: 'test2@example.com',
-      name: "Benjamín Suárez Chavarría",
-      password: "123123123",
-      dateofbirth: "1997-07-22",
-      profession: "ingeniero",
-      rut: "154326750",
-      cellphone: "3445564465"
+      name: 'Benjamín Suárez Chavarría',
+      password: '123123123',
+      dateofbirth: '1997-07-22',
+      profession: 'ingeniero',
+      rut: '154326750',
+      cellphone: '3445564465',
     };
 
     jest.spyOn(userModel, 'findOne').mockResolvedValue(userData);
@@ -101,16 +105,14 @@ describe('UserService', () => {
     await expect(service.create(userData)).rejects.toThrow(BadRequestException);
   });
 
-
-
   it('should throw BadRequestException if user registry is not complete', async () => {
     const userData = {
       email: 'test2@example.com',
-      name: "Benjamín Suárez Chavarría",
-      password: "123123123",
-      dateofbirth: "1997-07-22",
-      profession: "ingeniero",
-      rut: "154326750",
+      name: 'Benjamín Suárez Chavarría',
+      password: '123123123',
+      dateofbirth: '1997-07-22',
+      profession: 'ingeniero',
+      rut: '154326750',
       // missing field: cellphone
     };
 
@@ -118,10 +120,6 @@ describe('UserService', () => {
   });
 
   // Add more test cases for other UserService methods
-  
 
-    // Add more test cases for other UserService methods
-  });
-
-
-
+  // Add more test cases for other UserService methods
+});
