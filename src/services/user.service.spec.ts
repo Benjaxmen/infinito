@@ -127,6 +127,76 @@ describe('UserService', () => {
       expect(service.read_curr).toHaveBeenCalledWith(userId);
       expect(result).toEqual(curriculumData);
     });
+  describe('update_description', () => {
+    it('should update the description of the user', async () => {
+      const userId = 'user_id';
+      const newDesc = 'New description';
+
+      jest.spyOn(service, 'update_description').mockResolvedValue(newDesc);
+      const result = await service.update_description(userId, newDesc);
+
+      expect(service.update_description).toHaveBeenCalledWith(userId, newDesc);
+      expect(result).toEqual(newDesc);
+    });
+
+    it('should throw BadRequestException if user ID is not valid', async () => {
+      const userId = 'invalid_id';
+      const newDesc = 'New description';
+
+      jest.spyOn(service, 'update_description').mockImplementation(() => {
+        throw new BadRequestException();
+      });
+
+      await expect(service.update_description(userId, newDesc)).rejects.toThrow(BadRequestException);
+    });
+  });
+
+  describe('add_media', () => {
+    it('should add media to the user profile', async () => {
+      const userId = 'user_id';
+      const mediaId = 'media_id';
+
+      jest.spyOn(service, 'add_media').mockResolvedValue(mediaId);
+      const result = await service.add_media(userId);
+
+      expect(service.add_media).toHaveBeenCalledWith(userId);
+      expect(result).toEqual(mediaId);
+    });
+
+    it('should throw BadRequestException if user ID is not valid', async () => {
+      const userId = 'invalid_id';
+
+      jest.spyOn(service, 'add_media').mockImplementation(() => {
+        throw new BadRequestException();
+      });
+
+      await expect(service.add_media(userId)).rejects.toThrow(BadRequestException);
+    });
+  });
+
+  describe('add_doc', () => {
+    it('should add a document to the user profile', async () => {
+      const userId = 'user_id';
+      const docId = 'doc_id';
+
+      jest.spyOn(service, 'add_doc').mockResolvedValue(docId);
+      const result = await service.add_doc(userId);
+
+      expect(service.add_doc).toHaveBeenCalledWith(userId);
+      expect(result).toEqual(docId);
+    });
+
+    it('should throw BadRequestException if user ID is not valid', async () => {
+      const userId = 'invalid_id';
+
+      jest.spyOn(service, 'add_doc').mockImplementation(() => {
+        throw new BadRequestException();
+      });
+
+      await expect(service.add_doc(userId)).rejects.toThrow(BadRequestException);
+    });
+  });
+});
   
     // Add more test cases for other UserService methods
   });
