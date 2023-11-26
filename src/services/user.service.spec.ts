@@ -311,6 +311,3 @@ describe('UserService', () => {
 
     // Add more test cases for other UserService methods
   });
-
-
-});
